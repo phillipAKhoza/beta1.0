@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './screens.dart';
 import 'package:flutter/services.dart';
+import '../dto/journeydto.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -77,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
           body: const TabBarView(
             children: [
               Myfeed(),
-              Center(child: Text('JOURNEY')),
+              MyJourney(),
             ],
           ),
         ),
@@ -157,5 +158,52 @@ class Myfeed extends StatelessWidget {
         ],
       ),
     ));
+  }
+}
+
+class MyJourney extends StatefulWidget {
+  const MyJourney({super.key});
+
+  @override
+  State<MyJourney> createState() => _MyJourneyState();
+}
+
+class _MyJourneyState extends State<MyJourney> {
+  final JourneyData journeyData = JourneyData();
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+        child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(1),
+              itemCount: journeyData.journey.length,
+              itemBuilder: (BuildContext context, int index) {
+                return InkWell(
+                  child: Card(
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                      child: Text(
+                        journeyData.journey[index].title,
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                        builder: (BuildContext context) {
+                      return JourneyScreen(
+                          title: journeyData.journey[index].title);
+                    }));
+                  },
+                );
+              },
+            )));
   }
 }
