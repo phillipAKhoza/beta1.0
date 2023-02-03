@@ -173,37 +173,36 @@ class _MyJourneyState extends State<MyJourney> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(1),
-              itemCount: journeyData.journey.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  child: Card(
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-                      child: Text(
-                        journeyData.journey[index].title,
-                        style: const TextStyle(
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
+    return Scaffold(
+      body: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+        itemCount: journeyData.journey.length,
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            child: Card(
+              child: ListTile(
+                title: Text(
+                  journeyData.journey[index].title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
                   ),
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute<dynamic>(
-                        builder: (BuildContext context) {
-                      return JourneyScreen(
-                          title: journeyData.journey[index].title);
-                    }));
-                  },
-                );
-              },
-            )));
+                ),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+              ),
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+                return JourneyScreen(
+                    journeyTopic: journeyData.journey[index].journeyTopic,
+                    title: journeyData.journey[index].title);
+              }));
+            },
+          );
+        },
+      ),
+    );
   }
 }
+
+//MyJourney
