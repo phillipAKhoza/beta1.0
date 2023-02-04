@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import './screens.dart';
 import 'package:flutter/services.dart';
 import '../dto/journeydto.dart';
+import '../components/custom_card.dart';
+import '../dto/visual_dto.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -87,8 +89,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class Myfeed extends StatelessWidget {
+class Myfeed extends StatefulWidget {
   const Myfeed({super.key});
+
+  @override
+  State<Myfeed> createState() => _MyfeedState();
+}
+
+class _MyfeedState extends State<Myfeed> {
+  final FoundatioData foundationData = FoundatioData();
 
   @override
   Widget build(BuildContext context) {
@@ -151,9 +160,41 @@ class Myfeed extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(48.0),
-            child: Center(child: Text('AWAITING DATA....')),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(10.0),
+            itemCount: foundationData.foundations.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                child: InkWell(
+                  child: CustomCard(
+                    thumbnail: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                              foundationData.foundations[index].image ??
+                                  'assets/images/logo1.png'),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                    title: foundationData.foundations[index].title,
+                    paragraphs: foundationData.foundations[index].paragraphs,
+                    links: foundationData.foundations[index].links ?? [],
+                    author: foundationData.foundations[index].author ?? '',
+                    publishDate: foundationData.foundations[index].date,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                        builder: (BuildContext context) {
+                      return Foundation(
+                          foundation: foundationData.foundations[index]);
+                    }));
+                  },
+                ),
+              );
+            },
           )
         ],
       ),
