@@ -83,3 +83,33 @@ class NotificationData {
         links: [])
   ];
 }
+
+class EventData {
+  List<VisualDto> events = [
+    VisualDto(
+        image: 'assets/images/logo1.png',
+        title: "Night Prayer Service",
+        author: 'Man Ministries',
+        date: 'Jan 01',
+        paragraphs: [
+          'As a church, one of our core values is connecting with God through prayer and worship. It’s for this reason that the Wednesday Night Prayer Meeting is the most important service of the week! As a family of believers, we gather together to lift up needs in the church and around the world, believing God is going to move in mighty ways. Join us as we pray with faith that the Lord will help us in every area of our lives!',
+          'Wednesday Night Prayer Meetings give us the incredible opportunity to come together as a church family and spend time in God’s presence. Every Wednesday night, we gather together for a time of prayer, worship, and to hear a powerful devotional message that strengthens our faith. Invite a friend and come early to grab a seat and pray before service begins. We can’t wait to see you!'
+        ],
+        links: [
+          'Scriptures \n',
+          '*  Matthew 11:28 \n Come to me, all you who are weary and burdened, and I will give you rest.',
+          '*  I Corinthians 10:31 \n So whether you eat or drink or whatever you do, do it all for the glory of God.',
+        ]),
+    VisualDto(
+        image: null,
+        title: 'Sunday Service',
+        author: 'Children Foundation',
+        date: 'Jan 18',
+        paragraphs: [
+          'There’s a place for you with us at church.',
+          'Church service times and schedules vary from congregation to congregation. Please call for specific times. All church meetings follow the same 2-hour format: one main meeting for everyone and one other class separated by age groups or general interests.',
+          'What You Can Expect - If you\'re attending church for the first time, you may be a bit nervous. No worries; we\'re here for you! Here\'s what you can expect out of your visit.'
+        ],
+        links: [])
+  ];
+}
