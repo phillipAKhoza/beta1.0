@@ -22,39 +22,70 @@ class _MinistryscreenState extends State<Ministryscreen> {
           title: const Text('Our Church'),
           automaticallyImplyLeading: false,
         ),
-        body: Column(
-          children: [
-            const Text('\n Church Ministries \n'),
-            ListView.builder(
-              padding: const EdgeInsets.all(1),
-              itemCount: ministriesData.ministries.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  child: Card(
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-                      child: Text(
-                        ministriesData.ministries[index].church,
-                        style: const TextStyle(
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                        ),
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                '\n Church Ministries \n',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              InkWell(
+                child: const Card(
+                  child: ListTile(
+                    title: Text(
+                      'KIDS',
+                      style: TextStyle(
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
                       ),
                     ),
                   ),
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute<dynamic>(
-                        builder: (BuildContext context) {
-                      return Minitry(
-                          ministry: ministriesData.ministries[index]);
-                    }));
-                  },
-                );
-              },
-            ),
-          ],
+                ),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) {
+                    return const KidsMinistry();
+                  }));
+                },
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(1),
+                itemCount: ministriesData.ministries.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    child: Card(
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                        child: Text(
+                          ministriesData.ministries[index].church,
+                          style: const TextStyle(
+                            fontSize: 17.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                          builder: (BuildContext context) {
+                        return Minitry(
+                            ministry: ministriesData.ministries[index]);
+                      }));
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         ));
   }
 }
@@ -80,7 +111,7 @@ class Minitry extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                  ministry.church,
+                  '${ministry.church}\'s Ministry',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
@@ -113,25 +144,25 @@ class Minitry extends StatelessWidget {
                         ),
                       ),
                     const Text('\n'),
+                    // Text(
+                    //   '${ministry.church} is located at:',
+                    //   style: const TextStyle(
+                    //     fontSize: 12.0,
+                    //     fontWeight: FontWeight.bold,
+                    //     color: Colors.black54,
+                    //   ),
+                    // ),
+                    // for (var item in ministry.address)
+                    //   Text(
+                    //     item,
+                    //     style: const TextStyle(
+                    //       fontSize: 12.0,
+                    //       fontWeight: FontWeight.bold,
+                    //       color: Colors.black54,
+                    //     ),
+                    //   ),
                     Text(
-                      '${ministry.church} is located at:',
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54,
-                      ),
-                    ),
-                    for (var item in ministry.address)
-                      Text(
-                        item,
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    Text(
-                      'Contact ${ministry.church} :',
+                      'Contact ${ministry.church} Ministry :',
                       style: const TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.bold,
@@ -154,5 +185,26 @@ class Minitry extends StatelessWidget {
             ],
           ),
         ));
+  }
+}
+
+class KidsMinistry extends StatelessWidget {
+  const KidsMinistry({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text('KIDS MINISTRY'),
+        automaticallyImplyLeading: false,
+      ),
+      body: const Center(
+        child: Text("kids Screen"),
+      ),
+    );
   }
 }
