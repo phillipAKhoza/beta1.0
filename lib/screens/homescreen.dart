@@ -137,7 +137,7 @@ class _MyfeedState extends State<Myfeed> {
                 child: ListTile(
                   leading: Icon(Icons.book_sharp),
                   title: Text(
-                    'Ministries',
+                    'Our Church',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
