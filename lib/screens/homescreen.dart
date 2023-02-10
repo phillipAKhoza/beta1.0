@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import './screens.dart';
 import 'package:flutter/services.dart';
-import '../dto/journeydto.dart';
 import '../components/custom_card.dart';
-import '../dto/visual_dto.dart';
+import '../dto/dtobarrel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -97,7 +96,7 @@ class Myfeed extends StatefulWidget {
 }
 
 class _MyfeedState extends State<Myfeed> {
-  final FoundatioData foundationData = FoundatioData();
+  final FeedData feedData = FeedData();
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +163,7 @@ class _MyfeedState extends State<Myfeed> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.all(10.0),
-            itemCount: foundationData.foundations.length,
+            itemCount: feedData.myfeeds.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 child: InkWell(
@@ -172,24 +171,22 @@ class _MyfeedState extends State<Myfeed> {
                     thumbnail: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              foundationData.foundations[index].image ??
-                                  'assets/images/logo1.png'),
+                          image: AssetImage(feedData.myfeeds[index].image ??
+                              'assets/images/logo1.png'),
                           fit: BoxFit.fill,
                         ),
                       ),
                     ),
-                    title: foundationData.foundations[index].title,
-                    paragraphs: foundationData.foundations[index].paragraphs,
-                    links: foundationData.foundations[index].links ?? [],
-                    author: foundationData.foundations[index].author ?? '',
-                    publishDate: foundationData.foundations[index].date,
+                    title: feedData.myfeeds[index].title,
+                    paragraphs: feedData.myfeeds[index].paragraphs,
+                    links: feedData.myfeeds[index].links ?? [],
+                    author: feedData.myfeeds[index].author ?? '',
+                    publishDate: feedData.myfeeds[index].date,
                   ),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute<dynamic>(
                         builder: (BuildContext context) {
-                      return Foundation(
-                          foundation: foundationData.foundations[index]);
+                      return Feed(feed: feedData.myfeeds[index]);
                     }));
                   },
                 ),
@@ -199,6 +196,83 @@ class _MyfeedState extends State<Myfeed> {
         ],
       ),
     ));
+  }
+}
+
+class Feed extends StatelessWidget {
+  const Feed({super.key, required this.feed});
+  final FeedDto feed;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Text(
+            feed.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          automaticallyImplyLeading: false,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (feed.image != null)
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image:
+                          AssetImage(feed.image ?? 'assets/images/logo1.png'),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                child: Center(
+                    child: Text(
+                  feed.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17.0,
+                  ),
+                )),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var item in feed.paragraphs)
+                      Text(
+                        '\n $item',
+                        maxLines: 10,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    // if (Feed.links.isNotEmpty) const Text('\n'),
+                    for (var item in feed.links ?? [])
+                      Text(
+                        item,
+                        style: const TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                        ),
+                      ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ));
   }
 }
 

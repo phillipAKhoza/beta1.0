@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../dto/ministrydto.dart';
+import '../dto/dtobarrel.dart';
+import './screens.dart';
 
 class Ministryscreen extends StatefulWidget {
   const Ministryscreen({super.key});
@@ -27,6 +28,33 @@ class _MinistryscreenState extends State<Ministryscreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const Text(
+                '\n Read the word \n',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              InkWell(
+                child: const Card(
+                  child: ListTile(
+                    title: Text(
+                      'BIBLE',
+                      style: TextStyle(
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) {
+                    return const BibleScreen();
+                  }));
+                },
+              ),
               const Text(
                 '\n Church Ministries \n',
                 style: TextStyle(

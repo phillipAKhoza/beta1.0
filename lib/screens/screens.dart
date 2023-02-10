@@ -19,3 +19,4 @@ export '../screens/privacypolicy.dart';
 export '../screens/eventscreen.dart';
 export '../screens/ministries.dart';
 export '../screens/journeryscreen.dart';
+export '../screens/biblescreen.dart';
