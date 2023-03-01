@@ -12,8 +12,9 @@ class _StreamScreenState extends State<StreamScreen> {
   late String videoTitle;
   // Url List
   final List<String> _videoUrlList = [
-    'https://youtu.be/dWs3dzj4Wng',
-    'https://www.youtube.com/watch?v=668nUCeBHyY',
+    'https://youtu.be/llmUG-2hgTA',
+    'https://youtu.be/jz9DWsZu0aE',
+    'https://youtu.be/7LbfM18SwCw',
     'https://youtu.be/S3npWREXr8s',
   ];
 
