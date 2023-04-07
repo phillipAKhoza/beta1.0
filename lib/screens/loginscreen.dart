@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import '../services/auth.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Authentication().userAuth().then((user) => {
+          if (user.isLoggedIn) {Navigator.popAndPushNamed(context, "/app")}
+        });
     void _register() {
       Navigator.popAndPushNamed(context, "/register");
     }
@@ -37,26 +41,26 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             // ignore: prefer_const_constructors
-            Flexible(
-              child: const LoginButton(
-                icon: Icons.no_accounts,
-                text: 'Continue as Guest (Test)',
-                // loginMethod: AuthService().anonLogin,
-                color: Colors.grey,
-              ),
-            ),
-            const LoginButton(
-              text: 'Sign in with Google',
-              icon: Icons.g_translate,
-              color: Colors.blue,
-              // loginMethod: AuthService().googleLogin,
-            ),
             const LoginButtonWithUserName(
               text: 'Sign in with Username',
               icon: Icons.person,
               color: Colors.black,
               // loginMethod: AuthService().googleLogin,
             ),
+            const Flexible(
+              child: LoginButton(
+                text: 'Sign in with Google',
+                icon: Icons.g_translate,
+                color: Colors.blue,
+                // loginMethod: AuthService().googleLogin,
+              ),
+            ),
+            // const LoginButton(
+            //   text: 'Sign in with Google',
+            //   icon: Icons.g_translate,
+            //   color: Colors.blue,
+            //   // loginMethod: AuthService().googleLogin,
+            // ),
             InkWell(
               onTap: _register,
               child: const Align(

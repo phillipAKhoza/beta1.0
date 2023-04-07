@@ -1,5 +1,6 @@
+import '../services/auth.dart';
+import './screens.dart';
 import 'package:flutter/material.dart';
-// import 'package:intelli_waste/services/auth.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -100,6 +101,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   String username = '';
   String pass = '';
   String confirmPass = '';
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -115,12 +117,18 @@ class _RegistrationFormState extends State<RegistrationForm> {
             TextFormField(
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Enter your username',
+                labelText: 'Enter your email',
               ),
               // The validator receives the text that the user has entered.
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your Username';
+                  final RegExp regex = RegExp(
+                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)| (\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+                  if (!regex.hasMatch(value!)) {
+                    return 'Enter a valid email';
+                  } else {
+                    return null;
+                  }
                 } else {
                   username = value;
                 }
@@ -164,10 +172,66 @@ class _RegistrationFormState extends State<RegistrationForm> {
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
                   backgroundColor: Colors.black,
                 ),
-                onPressed: () {},
-                child: const Text('Register'),
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    Authentication()
+                        .userRegistration(username, confirmPass)
+                        .then((auth) => {
+                              setState(() {
+                                isLoading = false;
+                              }),
+                              if (auth.isValid)
+                                {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute<dynamic>(
+                                          builder: (BuildContext context) {
+                                    return const MainApp();
+                                  }))
+                                }
+                              else
+                                {
+                                  showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                      title: const Text('Registration Failed'),
+                                      content: Text(auth.message),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, 'OK'),
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                },
+                            });
+                  }
+                },
+                child: isLoading
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'Loading...',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ],
+                      )
+                    : const Text('Register'),
               ),
             ),
           ],

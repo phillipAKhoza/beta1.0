@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "865589370187",
+    "project_id": "uafc-westside-assembly",
+    "storage_bucket": "uafc-westside-assembly.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:865589370187:android:50568e6e5740d37e2adcce",
+        "android_client_info": {
+          "package_name": "com.example.uafcapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "865589370187-89lgobouhr5bfb0vv0oi5bd1rmhumdvi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1E4PTVqFgX8bsPDKty4gHlCLJczUe-RM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "865589370187-89lgobouhr5bfb0vv0oi5bd1rmhumdvi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

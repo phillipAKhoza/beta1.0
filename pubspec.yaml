@@ -38,6 +38,11 @@ dependencies:
   dropdown_formfield: ^0.1.4
   flutter_widget_from_html: ^0.9.0+1
   youtube_player_flutter: ^8.1.1
+  firebase_core: ^2.9.0
+  firebase_auth: ^4.4.0
+  cloud_firestore: ^4.5.0
+  provider: ^6.0.5
+  firebase_ui_auth: ^1.2.0
 
 dev_dependencies:
   flutter_test:

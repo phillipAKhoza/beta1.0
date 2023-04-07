@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import '../services/auth.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,8 +20,322 @@ class ProfileScreen extends StatelessWidget {
         title: const Text('Profile'),
         automaticallyImplyLeading: false,
       ),
-      body: const Center(
-        child: Text("Profile Screen"),
+      body: FutureBuilder<UserResult>(
+        future: Authentication()
+            .userAuth(), // a previously-obtained Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot<UserResult> snapshot) {
+          List<Widget> children;
+          if (snapshot.hasData) {
+            children = <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 0, right: 0, top: 10, bottom: 50),
+                child: SizedBox(
+                  height: 150,
+                  child: Card(
+                    child: Center(
+                      child: ListTile(
+                        leading: const FlutterLogo(size: 82.0),
+                        title: Text(
+                          '${snapshot.data?.userDetails[1]}',
+                          style: const TextStyle(
+                            fontSize: 25.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  Card(
+                    child: ListTile(
+                      title: const Text('Personal Information'),
+                      trailing: const Icon(Icons.keyboard_arrow_right),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                            builder: (BuildContext context) {
+                          return const PersonalInformation();
+                        }));
+                      },
+                    ),
+                  ),
+                  const Card(
+                    child: ListTile(
+                      title: Text('Contact Information'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
+                  ),
+                  const Card(
+                    child: ListTile(
+                      title: Text('Church Information'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
+                  ),
+                ],
+              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 16),
+              //   child: Text('Result: ${snapshot.data?.userDetails[0]}'),
+              // ),
+            ];
+          } else if (snapshot.hasError) {
+            children = <Widget>[
+              const Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 60,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text('Error: ${snapshot.error}'),
+              ),
+            ];
+          } else {
+            children = const <Widget>[
+              SizedBox(
+                width: 60,
+                height: 60,
+                child: CircularProgressIndicator(),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('Awaiting result...'),
+              ),
+            ];
+          }
+          return Column(
+            children: children,
+          );
+        },
+      ),
+      // body:
+    );
+  }
+}
+
+enum Gender { male, female }
+
+class PersonalInformation extends StatefulWidget {
+  const PersonalInformation({super.key});
+
+  @override
+  State<PersonalInformation> createState() => _PersonalInformationState();
+}
+
+class _PersonalInformationState extends State<PersonalInformation> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const SizedBox(
+              height: 700,
+              child: PersonalInfoForm(),
+            ),
+            Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PersonalInfoForm extends StatefulWidget {
+  const PersonalInfoForm({super.key});
+
+  @override
+  State<PersonalInfoForm> createState() => _PersonalInfoFormState();
+}
+
+class _PersonalInfoFormState extends State<PersonalInfoForm> {
+  Gender? _character = Gender.male;
+  late String _myActivity;
+  late String _myActivityResult;
+  String displayName = '';
+  String name = '';
+  String surname = '';
+  String age = '';
+  final formKey = GlobalKey<FormState>();
+  TextEditingController _controller = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _myActivity = '';
+    _myActivityResult = '';
+    _controller.text =
+        ' ${selectedDate.day} - ${selectedDate.month} - ${selectedDate.year}';
+  }
+
+  _saveForm() {
+    var form = formKey.currentState;
+  }
+
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(1960, 1),
+        lastDate: selectedDate);
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text('Personal Information'),
+      ),
+      body: Center(
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 10,
+                  bottom: 10,
+                ),
+                child: TextFormField(
+                  textAlign: TextAlign.start,
+                  decoration: const InputDecoration(
+                    border: UnderlineInputBorder(),
+                    hintText: 'Name',
+                  ),
+                  // The validator receives the text that the user has entered.
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your Name';
+                    } else {
+                      name = value;
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 10,
+                  bottom: 10,
+                ),
+                child: TextFormField(
+                  textAlign: TextAlign.start,
+                  decoration: const InputDecoration(
+                    border: UnderlineInputBorder(),
+                    hintText: 'Surname',
+                  ),
+                  // The validator receives the text that the user has entered.
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your Surname';
+                    } else {
+                      surname = value;
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 10,
+                  bottom: 10,
+                ),
+                child: InkWell(
+                  onTap: () {
+                    _selectDate(context);
+                  },
+                  child: IgnorePointer(
+                    child: TextField(
+                      // controller: _controller,
+                      decoration: InputDecoration(
+                        labelText:
+                            ' ${selectedDate.day} - ${selectedDate.month} - ${selectedDate.year}',
+                        hintText: 'Enter Date of Birth',
+                        border: const UnderlineInputBorder(),
+                        suffixIcon: const Icon(Icons.calendar_today_outlined),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 10,
+                  bottom: 10,
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: ListTile(
+                        title: const Text('Male'),
+                        leading: Radio<Gender>(
+                          value: Gender.male,
+                          groupValue: _character,
+                          onChanged: (Gender? value) {
+                            setState(() {
+                              _character = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListTile(
+                        title: const Text('Female'),
+                        leading: Radio<Gender>(
+                          value: Gender.female,
+                          groupValue: _character,
+                          onChanged: (Gender? value) {
+                            setState(() {
+                              _character = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                  ),
+                  onPressed: _saveForm,
+                  child: const Text('Save'),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
