@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './screens.dart';
+import '../services/auth.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -124,10 +125,11 @@ class _MoreItemsState extends State<MoreItems> {
               title: const Text("SignOut"),
               trailing: const Icon(Icons.keyboard_arrow_right),
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                  return const SplashScreen();
-                }));
+                Authentication().signOut().then((value) => Navigator.of(context)
+                        .push(MaterialPageRoute<dynamic>(
+                            builder: (BuildContext context) {
+                      return const LoginScreen();
+                    })));
               },
             )),
           ],

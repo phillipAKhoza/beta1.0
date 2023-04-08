@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>865589370187-fnh7v8qhiebj9pb7qgjsft017hgjkd60.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.865589370187-fnh7v8qhiebj9pb7qgjsft017hgjkd60</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD1V7puUJmQiDiP0VfJFlnk4XJNm3dADB0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>865589370187</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>za.org.uafcapp</string>
+	<key>PROJECT_ID</key>
+	<string>uafc-westside-assembly</string>
+	<key>STORAGE_BUCKET</key>
+	<string>uafc-westside-assembly.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:865589370187:ios:e435ffc069a84b992adcce</string>
+</dict>
+</plist>

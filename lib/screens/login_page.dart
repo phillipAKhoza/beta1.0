@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:intelli_waste/services/auth.dart';
+import './screens.dart';
+import '../services/auth.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -96,6 +97,7 @@ class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
   String username = '';
   String pass = '';
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -113,12 +115,18 @@ class _LoginFormState extends State<LoginForm> {
             TextFormField(
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Enter your username',
+                labelText: 'Enter your email',
               ),
               // The validator receives the text that the user has entered.
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your Username';
+                  final RegExp regex = RegExp(
+                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)| (\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+                  if (!regex.hasMatch(value!)) {
+                    return 'Enter a valid email';
+                  } else {
+                    return null;
+                  }
                 } else {
                   username = value;
                 }
@@ -141,28 +149,69 @@ class _LoginFormState extends State<LoginForm> {
                 return null;
               },
             ),
-            Padding(
+            Container(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                ),
+                    backgroundColor: Colors.black,
+                    minimumSize: const Size.fromHeight(50)),
                 onPressed: () async {
-                  try {
-                    // await AuthService().loginUsername(username, pass);
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.popAndPushNamed(context, "/home");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Loading')),
-                      );
-                    }
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(e.toString())),
-                    );
+                  if (_formKey.currentState!.validate()) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    Authentication()
+                        .signInWithEmaiAndPassword(username, pass)
+                        .then((auth) => {
+                              setState(() {
+                                isLoading = false;
+                              }),
+                              if (auth.isValid)
+                                {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute<dynamic>(
+                                          builder: (BuildContext context) {
+                                    return const MainApp();
+                                  }))
+                                }
+                              else
+                                {
+                                  showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                      title: const Text('Login Failed'),
+                                      content: Text(auth.message),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, 'OK'),
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                },
+                            });
                   }
                 },
-                child: const Text('LogIn'),
+                child: isLoading
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'Loading...',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ],
+                      )
+                    : const Text('LogIn'),
               ),
             ),
           ],
