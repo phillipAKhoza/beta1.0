@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:dropdown_formfield/dropdown_formfield.dart';
+
+const List<String> list = <String>[
+  'Prayer',
+  'Praise',
+  'New Visitor',
+  'Salvation',
+  'Volunteering',
+  'Other'
+];
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -9,8 +17,6 @@ class ChatScreen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             const SizedBox(
               height: 500,
@@ -63,55 +69,8 @@ class _ChatFormState extends State<ChatForm> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.all(16),
-                child: DropDownFormField(
-                  titleText: 'Type of Message',
-                  hintText: 'Please choose one',
-                  value: _myActivity,
-                  onSaved: (value) {
-                    setState(() {
-                      _myActivity = value;
-                    });
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _myActivity = value;
-                    });
-                  },
-                  dataSource: const [
-                    {
-                      "display": "Prayer",
-                      "value": "Prayer",
-                    },
-                    {
-                      "display": "Praise",
-                      "value": "Praise",
-                    },
-                    {
-                      "display": "New Visitor",
-                      "value": "New Visitor",
-                    },
-                    {
-                      "display": "Salvation",
-                      "value": "Salvation",
-                    },
-                    {
-                      "display": "Volunteering",
-                      "value": "Volunteering",
-                    },
-                    {
-                      "display": "Dedication",
-                      "value": "Dedicatione",
-                    },
-                    {
-                      "display": "Other",
-                      "value": "Other",
-                    },
-                  ],
-                  textField: 'display',
-                  valueField: 'value',
-                ),
-              ),
+                  padding: const EdgeInsets.all(16),
+                  child: const DropDownButton()),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextFormField(
@@ -147,6 +106,42 @@ class _ChatFormState extends State<ChatForm> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class DropDownButton extends StatefulWidget {
+  const DropDownButton({super.key});
+
+  @override
+  State<DropDownButton> createState() => _DropDownButtonState();
+}
+
+class _DropDownButtonState extends State<DropDownButton> {
+  String dropdownValue = list.first;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      elevation: 16,
+      style: const TextStyle(color: Colors.black54),
+      underline: Container(
+        height: 3,
+        color: Colors.black12,
+      ),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+        });
+      },
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
     );
   }
 }

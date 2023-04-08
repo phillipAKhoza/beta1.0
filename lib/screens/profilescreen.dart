@@ -27,58 +27,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
           List<Widget> children;
           if (snapshot.hasData) {
             children = <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 0, right: 0, top: 10, bottom: 50),
-                child: SizedBox(
-                  height: 150,
-                  child: Card(
-                    child: Center(
-                      child: ListTile(
-                        leading: const FlutterLogo(size: 82.0),
-                        title: Text(
-                          '${snapshot.data?.userDetails[1]}',
-                          style: const TextStyle(
-                            fontSize: 25.0,
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 0, right: 0, top: 10, bottom: 30),
+                      child: SizedBox(
+                        height: 150,
+                        child: Card(
+                          child: Center(
+                            child: ListTile(
+                              leading: const FlutterLogo(size: 82.0),
+                              title: Text(
+                                '${snapshot.data?.userDetails[1]}',
+                                style: const TextStyle(
+                                  fontSize: 25.0,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 450, child: PersonalInfoForm())
+                  ],
                 ),
               ),
-              Column(
-                children: [
-                  Card(
-                    child: ListTile(
-                      title: const Text('Personal Information'),
-                      trailing: const Icon(Icons.keyboard_arrow_right),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute<dynamic>(
-                            builder: (BuildContext context) {
-                          return const PersonalInformation();
-                        }));
-                      },
-                    ),
-                  ),
-                  const Card(
-                    child: ListTile(
-                      title: Text('Contact Information'),
-                      trailing: Icon(Icons.keyboard_arrow_right),
-                    ),
-                  ),
-                  const Card(
-                    child: ListTile(
-                      title: Text('Church Information'),
-                      trailing: Icon(Icons.keyboard_arrow_right),
-                    ),
-                  ),
-                ],
-              ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 16),
-              //   child: Text('Result: ${snapshot.data?.userDetails[0]}'),
-              // ),
             ];
           } else if (snapshot.hasError) {
             children = <Widget>[
@@ -163,6 +138,8 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
   String name = '';
   String surname = '';
   String age = '';
+  int phoneNumber = 0;
+  String churchBracnh = "";
   final formKey = GlobalKey<FormState>();
   TextEditingController _controller = TextEditingController();
   @override
@@ -196,144 +173,165 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text('Personal Information'),
-      ),
-      body: Center(
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 10,
-                  bottom: 10,
-                ),
-                child: TextFormField(
-                  textAlign: TextAlign.start,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    hintText: 'Name',
+      body: SingleChildScrollView(
+        child: Center(
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 10,
+                    bottom: 10,
                   ),
-                  // The validator receives the text that the user has entered.
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your Name';
-                    } else {
-                      name = value;
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 10,
-                  bottom: 10,
-                ),
-                child: TextFormField(
-                  textAlign: TextAlign.start,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    hintText: 'Surname',
-                  ),
-                  // The validator receives the text that the user has entered.
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your Surname';
-                    } else {
-                      surname = value;
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 10,
-                  bottom: 10,
-                ),
-                child: InkWell(
-                  onTap: () {
-                    _selectDate(context);
-                  },
-                  child: IgnorePointer(
-                    child: TextField(
-                      // controller: _controller,
-                      decoration: InputDecoration(
-                        labelText:
-                            ' ${selectedDate.day} - ${selectedDate.month} - ${selectedDate.year}',
-                        hintText: 'Enter Date of Birth',
-                        border: const UnderlineInputBorder(),
-                        suffixIcon: const Icon(Icons.calendar_today_outlined),
-                      ),
+                  child: TextFormField(
+                    textAlign: TextAlign.start,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      hintText: 'Name',
                     ),
+                    // The validator receives the text that the user has entered.
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your Name';
+                      } else {
+                        name = value;
+                      }
+                      return null;
+                    },
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 10,
-                  bottom: 10,
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: TextFormField(
+                    textAlign: TextAlign.start,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      hintText: 'Surname',
+                    ),
+                    // The validator receives the text that the user has entered.
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your Surname';
+                      } else {
+                        surname = value;
+                      }
+                      return null;
+                    },
+                  ),
                 ),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: ListTile(
-                        title: const Text('Male'),
-                        leading: Radio<Gender>(
-                          value: Gender.male,
-                          groupValue: _character,
-                          onChanged: (Gender? value) {
-                            setState(() {
-                              _character = value;
-                            });
-                          },
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      _selectDate(context);
+                    },
+                    child: IgnorePointer(
+                      child: TextField(
+                        // controller: _controller,
+                        decoration: InputDecoration(
+                          labelText:
+                              ' ${selectedDate.day} - ${selectedDate.month} - ${selectedDate.year}',
+                          hintText: 'Enter Date of Birth',
+                          border: const UnderlineInputBorder(),
+                          suffixIcon: const Icon(Icons.calendar_today_outlined),
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: ListTile(
-                        title: const Text('Female'),
-                        leading: Radio<Gender>(
-                          value: Gender.female,
-                          groupValue: _character,
-                          onChanged: (Gender? value) {
-                            setState(() {
-                              _character = value;
-                            });
-                          },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ListTile(
+                          title: const Text('Male'),
+                          leading: Radio<Gender>(
+                            value: Gender.male,
+                            groupValue: _character,
+                            onChanged: (Gender? value) {
+                              setState(() {
+                                _character = value;
+                              });
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
+                      Expanded(
+                        child: ListTile(
+                          title: const Text('Female'),
+                          leading: Radio<Gender>(
+                            value: Gender.female,
+                            groupValue: _character,
+                            onChanged: (Gender? value) {
+                              setState(() {
+                                _character = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  onPressed: _saveForm,
-                  child: const Text('Save'),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: TextFormField(
+                    textAlign: TextAlign.start,
+                    keyboardType: TextInputType.number,
+
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      hintText: 'Phone Number',
+                    ),
+                    // The validator receives the text that the user has entered.
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your Phone Number';
+                      } else {
+                        phoneNumber = int.parse(value);
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
+                    onPressed: _saveForm,
+                    child: const Text('Save'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
