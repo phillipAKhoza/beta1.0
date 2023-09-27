@@ -60,6 +60,7 @@ class _ChatFormState extends State<ChatForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chat'),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Form(

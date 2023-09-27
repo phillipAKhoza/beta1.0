@@ -69,6 +69,7 @@ class _StreamScreenState extends State<StreamScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Streaming'),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
