@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   animated_splash_screen: ^1.2.0
-  dropdown_formfield: ^0.1.4
+  #dropdown_formfield: ^0.1.4
   flutter_widget_from_html: ^0.9.0+1
   youtube_player_flutter: ^8.1.1
   firebase_core: ^2.9.0
