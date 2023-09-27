@@ -21,15 +21,15 @@ class RegisterScreen extends StatelessWidget {
           reverse: true,
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(
+              const Padding(
+                padding: EdgeInsets.only(
                   left: 10,
                   right: 10,
                   top: 80,
                   bottom: 30,
                 ),
                 child: Column(
-                  children: const [
+                  children: [
                     Text(
                       'UAFC',
                       style:
@@ -216,9 +216,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   }
                 },
                 child: isLoading
-                    ? Row(
+                    ? const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'Loading...',
                             style: TextStyle(fontSize: 20),

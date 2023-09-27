@@ -6,7 +6,7 @@ class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    void _register() {
+    void register() {
       Navigator.popAndPushNamed(context, "/register");
     }
 
@@ -17,15 +17,15 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
+            const Padding(
+              padding: EdgeInsets.only(
                 left: 10,
                 right: 10,
                 top: 80,
                 bottom: 30,
               ),
               child: Column(
-                children: const [
+                children: [
                   Text(
                     'UAFC',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 90),
@@ -66,7 +66,7 @@ class LoginPage extends StatelessWidget {
                 bottom: 10,
               ),
               child: InkWell(
-                onTap: _register,
+                onTap: register,
                 child: const Align(
                   alignment: Alignment.bottomCenter,
                   child: Text(
@@ -196,9 +196,9 @@ class _LoginFormState extends State<LoginForm> {
                   }
                 },
                 child: isLoading
-                    ? Row(
+                    ? const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'Loading...',
                             style: TextStyle(fontSize: 20),

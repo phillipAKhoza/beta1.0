@@ -20,18 +20,18 @@ class LoginScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Flexible(
+            const Flexible(
               child: Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 50),
+                padding: EdgeInsets.only(left: 10, right: 10, top: 50),
                 child: Column(
                   // ignore: prefer_const_literals_to_create_immutables
                   children: [
-                    const Text(
+                    Text(
                       'UAFC',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, height: 1, fontSize: 80),
                     ),
-                    const Text(
+                    Text(
                       'YOUR VIRTUAL HOME',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
