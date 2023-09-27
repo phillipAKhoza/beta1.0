@@ -20,4 +20,4 @@ export '../screens/eventscreen.dart';
 export '../screens/ministries.dart';
 export '../screens/journeryscreen.dart';
 export '../screens/biblescreen.dart';
-export '../screens/adminScreen.dart';
+export '../screens/admin_Screen.dart';

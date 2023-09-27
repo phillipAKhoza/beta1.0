@@ -16,7 +16,7 @@ class Authentication {
   Future<UserResult> userAuth() async {
     bool isLoggedIn = false;
     List<String?> userDetails = [];
-    await FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         isLoggedIn = false;
       } else {
