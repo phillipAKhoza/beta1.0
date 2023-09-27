@@ -33,19 +33,19 @@ class TechnicalForm extends StatefulWidget {
 }
 
 class _TechnicalFormState extends State<TechnicalForm> {
-  late String _myActivity;
-  late String _myActivityResult;
+  // late String _myActivity;
+  // late String _myActivityResult;
   String message = '';
-  final formKey = new GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-    _myActivity = '';
-    _myActivityResult = '';
+    // _myActivity = '';
+    // _myActivityResult = '';
   }
 
   _saveForm() {
-    var form = formKey.currentState;
+    // var form = formKey.currentState;
   }
 
   @override

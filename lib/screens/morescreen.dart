@@ -7,15 +7,15 @@ class MoreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Column(
           // crossAxisAlignment: CrossAxisAlignment.stretch,
           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: const [
+          children: [
             SizedBox(
-              height: 500,
+              height: 1000,
               child: MoreItems(),
             )
           ],
@@ -39,7 +39,8 @@ class _MoreItemsState extends State<MoreItems> {
     'Technical Support',
     'SignOut',
     'Privacy Policy',
-    'Terms Of Use'
+    'Terms Of Use',
+    'Admin'
   ];
   final List<String> path = <String>[
     '/profile',
@@ -47,7 +48,8 @@ class _MoreItemsState extends State<MoreItems> {
     '/technical',
     '/login',
     '/policy',
-    '/terms'
+    '/terms',
+    '/admin'
   ];
   @override
   Widget build(BuildContext context) {
@@ -119,6 +121,18 @@ class _MoreItemsState extends State<MoreItems> {
                 }));
               },
             )),
+            Card(
+                child: ListTile(
+                  // leading: Icon(Icons.${icon[index]}),
+                  title: const Text("Admin"),
+                  trailing: const Icon(Icons.keyboard_arrow_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+                          return const AdminScreen();
+                        }));
+                  },
+                )),
             Card(
                 child: ListTile(
               // leading: Icon(Icons.${icon[index]}),

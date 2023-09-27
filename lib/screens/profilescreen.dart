@@ -132,8 +132,8 @@ class PersonalInfoForm extends StatefulWidget {
 
 class _PersonalInfoFormState extends State<PersonalInfoForm> {
   Gender? _character = Gender.male;
-  late String _myActivity;
-  late String _myActivityResult;
+  // late String _myActivity;
+  // late String _myActivityResult;
   String displayName = '';
   String name = '';
   String surname = '';
@@ -141,18 +141,18 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
   int phoneNumber = 0;
   String churchBracnh = "";
   final formKey = GlobalKey<FormState>();
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   @override
   void initState() {
     super.initState();
-    _myActivity = '';
-    _myActivityResult = '';
+    // _myActivity = '';
+    // _myActivityResult = '';
     _controller.text =
         ' ${selectedDate.day} - ${selectedDate.month} - ${selectedDate.year}';
   }
 
   _saveForm() {
-    var form = formKey.currentState;
+    // var form = formKey.currentState;
   }
 
   DateTime selectedDate = DateTime.now();

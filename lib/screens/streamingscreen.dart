@@ -41,8 +41,8 @@ class _StreamScreenState extends State<StreamScreen> {
       );
 
       _StreamScreenController.addListener(() {
-        print(
-            'for $_id got isPlaying state ${_StreamScreenController.value.isPlaying}');
+        // print(
+        //     'for $_id got isPlaying state ${_StreamScreenController.value.isPlaying}');
         if (cStates[_id] != _StreamScreenController.value.isPlaying) {
           if (mounted) {
             setState(() {
@@ -107,7 +107,7 @@ class _StreamScreenState extends State<StreamScreen> {
                           FullScreenButton(),
                         ],
                         onReady: () {
-                          print('onReady for $index');
+                          // print('onReady for $index');
                         },
                         onEnded: (YoutubeMetaData _md) {
                           _StreamScreenController.seekTo(
