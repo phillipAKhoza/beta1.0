@@ -7,18 +7,7 @@ class AdminScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(
-              height: 1000,
-              child: AdminItems(),
-            )
-          ],
-        ),
-      ),
+      body: AdminItems(),
     );
   }
 }
@@ -61,9 +50,9 @@ class _AdminItemsState extends State<AdminItems> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Admin'),
-          automaticallyImplyLeading: false,
         ),
         body: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(8),
           children: <Widget>[
             Card(
