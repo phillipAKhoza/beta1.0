@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/foundationfeed.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -19,7 +20,7 @@ class AdminItems extends StatefulWidget {
 }
 
 class _AdminItemsState extends State<AdminItems> {
-  final List<String> items = <String>[
+  final List<String> item = <String>[
     'Feeds',
     'Events',
     'Notifications',
@@ -201,13 +202,8 @@ class SecondRoute extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Second Route'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // Navigate back to first route when tapped.
-          },
-          child: const Text('Go back!'),
-        ),
+      body: const Center(
+        child: FoundationFeed(),
       ),
     );
   }
