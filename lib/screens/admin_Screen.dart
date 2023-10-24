@@ -21,12 +21,12 @@ class AdminItems extends StatefulWidget {
 
 class _AdminItemsState extends State<AdminItems> {
   final List<String> item = <String>[
-    'Feeds',
-    'Events',
-    'Notifications',
+    'Feed',
+    'Event',
+    'Notification',
     'Stream',
     'Salvation Journey',
-    'Foundations',
+    'Foundation',
     'Location',
     'Kids',
     'Men',
@@ -52,155 +52,37 @@ class _AdminItemsState extends State<AdminItems> {
         appBar: AppBar(
           title: const Text('Admin'),
         ),
-        body: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(8),
-          children: <Widget>[
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Feeds"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Events"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Notifications"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Stream"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Salvation Journey"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Foundations"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Location"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Kids"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Men"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Women"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Youth"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const SecondRoute();
-                        }));
-                  },
-                )),
-          ],
-        ));
+        body: ListView.builder(
+          shrinkWrap: true,
+          // physics: const NeverScrollableScrollPhysics(),
+          // padding: const EdgeInsets.all(10.0),
+          itemCount: item.length,
+          itemBuilder: (BuildContext context, int index) {
+            return
+              Card(
+                  child: ListTile(
+                    // leading: Icon(Icons.${icon[index]}),
+                    title: Text(item[index]),
+                    trailing: const Icon(Icons.keyboard_arrow_right),
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+                            return AdminFormScreen(section: item[index],);
+                          }));
+                    },
+                  ));
+          }));
   }
 }
 
-class SecondRoute extends StatelessWidget {
-  const SecondRoute({super.key});
-
+class AdminFormScreen extends StatelessWidget {
+  const AdminFormScreen({super.key, required this.section});
+  final String section;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Second Route'),
+        title: Text("$section screen"),
       ),
       body: const Center(
         child: FoundationFeed(),
