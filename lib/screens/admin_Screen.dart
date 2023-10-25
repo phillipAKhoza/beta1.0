@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/foundationfeed.dart';
+import '../components/formBarell.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -92,7 +92,12 @@ class AdminFormScreen extends StatelessWidget {
               height: 700,
                 child: FoundationFeed()
             ),
-            ] else if(section !=null)...[
+            ] else if(section =="Location")...[
+              const SizedBox(
+                  height: 700,
+                  child: BranchesForm()
+              ),
+            ]else if(section !=null)...[
              Text(section)
             ],
           ],
