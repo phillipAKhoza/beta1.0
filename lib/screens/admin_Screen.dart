@@ -84,8 +84,19 @@ class AdminFormScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("$section screen"),
       ),
-      body: const Center(
-        child: FoundationFeed(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            if(section == "Feed" || section == "Foundation")...[
+            const SizedBox(
+              height: 700,
+                child: FoundationFeed()
+            ),
+            ] else if(section !=null)...[
+             Text(section)
+            ],
+          ],
+        ),
       ),
     );
   }
