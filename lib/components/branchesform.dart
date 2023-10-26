@@ -16,7 +16,6 @@ class _BranchesFormState extends State<BranchesForm> {
   String address="";
   List<String> paragraphs=[];
   List<String>? contacts;
-  String message = '';
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
@@ -147,7 +146,7 @@ class _BranchesFormState extends State<BranchesForm> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your List/Links here!';
                   } else {
-                    message = value;
+                    contacts?.insert(0, value);
                   }
                   return null;
                 },
