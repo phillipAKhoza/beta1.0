@@ -82,7 +82,6 @@ class AdminFormScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var pHeight = window.physicalSize.height;
     return Scaffold(
       appBar: AppBar(
         title: Text("$section screen"),
@@ -107,9 +106,6 @@ class AdminFormScreen extends StatelessWidget {
                     height: 850,
                     child: JourneyForm()
                 ),
-              ]else if(section !=null)...[
-                Text("$section ...")
-                //   Salvation Journey
               ],
             ],
           ),
