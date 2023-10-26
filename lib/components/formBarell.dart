@@ -1,2 +1,3 @@
-export './branchesform.dart';
-export './foundationfeed.dart';
+export './branchesForm.dart';
+export './foundationFeed.dart';
+export './journeyForm.dart';
