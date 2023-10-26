@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 
 
-class FoundationFeed extends StatefulWidget {
-  const FoundationFeed({super.key});
+class BranchesForm extends StatefulWidget {
+  const BranchesForm({super.key});
 
   @override
-  State<FoundationFeed> createState() => _FoundationFeedState();
+  State<BranchesForm> createState() => _BranchesFormState();
 }
 
-class _FoundationFeedState extends State<FoundationFeed> {
+class _BranchesFormState extends State<BranchesForm> {
   // late String _myActivity;
   // late String _myActivityResult;
-  String title= "";
-  String? author;
-  String date="";
+  String church= "";
+  String leaders="";
+  String address="";
   List<String> paragraphs=[];
-  List<String>? links;
-  String message = '';
+  List<String>? contacts;
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
@@ -50,14 +49,14 @@ class _FoundationFeedState extends State<FoundationFeed> {
                 textAlign: TextAlign.start,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  hintText: 'title',
+                  hintText: 'church name',
                 ),
                 // The validator receives the text that the user has entered.
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter title here!';
+                    return 'Please enter church name here!';
                   } else {
-                    title = value;
+                    church = value;
                   }
                   return null;
                 },
@@ -74,14 +73,14 @@ class _FoundationFeedState extends State<FoundationFeed> {
                 textAlign: TextAlign.start,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  hintText: 'author',
+                  hintText: 'leaders',
                 ),
                 // The validator receives the text that the user has entered.
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter author here!';
+                    return 'Please enter leaders of the branch here!';
                   } else {
-                    author = value;
+                    leaders = value;
                   }
                   return null;
                 },
@@ -98,14 +97,14 @@ class _FoundationFeedState extends State<FoundationFeed> {
                 textAlign: TextAlign.start,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  hintText: 'date',
+                  hintText: 'address',
                 ),
                 // The validator receives the text that the user has entered.
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter date here!';
+                    return 'Please enter address here!';
                   } else {
-                    date = value;
+                    address = value;
                   }
                   return null;
                 },
@@ -126,7 +125,7 @@ class _FoundationFeedState extends State<FoundationFeed> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your paragraphs here!';
                   } else {
-                    message = value;
+                    paragraphs.insert(0, value);
                   }
                   return null;
                 },
@@ -147,7 +146,7 @@ class _FoundationFeedState extends State<FoundationFeed> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your List/Links here!';
                   } else {
-                    message = value;
+                    contacts?.insert(0, value);
                   }
                   return null;
                 },
