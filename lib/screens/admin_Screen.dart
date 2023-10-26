@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/formBarell.dart';
+import 'dart:ui';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -78,29 +79,40 @@ class _AdminItemsState extends State<AdminItems> {
 class AdminFormScreen extends StatelessWidget {
   const AdminFormScreen({super.key, required this.section});
   final String section;
+
   @override
   Widget build(BuildContext context) {
+    var pHeight = window.physicalSize.height;
     return Scaffold(
       appBar: AppBar(
         title: Text("$section screen"),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            if(section == "Feed" || section == "Foundation")...[
-            const SizedBox(
-              height: 700,
-                child: FoundationFeed()
-            ),
-            ] else if(section =="Location")...[
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              if(section == "Feed" || section == "Foundation" || section == "Notification" || section == "Event")...[
               const SizedBox(
-                  height: 700,
-                  child: BranchesForm()
+                height: 700,
+                  child: FoundationFeed()
               ),
-            ]else if(section !=null)...[
-             Text(section)
+              ] else if(section =="Location"|| section =="Kids" ||section =="Men" || section =="Women" || section =="Youth")...[
+                const SizedBox(
+                    height: 700,
+                    child: BranchesForm()
+                ),
+              ]else if(section == "Salvation Journey")...[
+                const SizedBox(
+                    height: 850,
+                    child: JourneyForm()
+                ),
+              ]else if(section !=null)...[
+                Text("$section ...")
+                //   Salvation Journey
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
