@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../services/feedDb.dart';
 
 class FoundationFeed extends StatefulWidget {
   const FoundationFeed({super.key});
@@ -25,8 +25,10 @@ class _FoundationFeedState extends State<FoundationFeed> {
     // _myActivityResult = '';
   }
 
-  _saveForm() {
-    // var form = formKey.currentState;
+  _saveForm() async{
+    var form = formKey.currentState;
+    // List feed = await AddToDB().addFeed();
+    print(form);
   }
 
   @override
