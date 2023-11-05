@@ -91,13 +91,13 @@ class AdminFormScreen extends StatelessWidget {
           child: Column(
             children: [
               if(section == "Feed" || section == "Foundation" || section == "Notification" || section == "Event")...[
-              const SizedBox(
+               SizedBox(
                 height: 850,
-                  child: FoundationFeed()
+                  child:  FoundationFeed(screen:section)
               ),
               ] else if(section =="Location"|| section =="Kids" ||section =="Men" || section =="Women" || section =="Youth")...[
                 const SizedBox(
-                    height: 700,
+                    height: 850,
                     child: BranchesForm()
                 ),
               ]else if(section == "Salvation Journey")...[

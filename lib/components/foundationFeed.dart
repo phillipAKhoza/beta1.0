@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:uafcapp/dto/dtobarrel.dart';
 import '../services/feedDb.dart';
 
 class FoundationFeed extends StatefulWidget {
-  const FoundationFeed({super.key});
-
+  const FoundationFeed({super.key,required this.screen});
+  final String screen;
   @override
   State<FoundationFeed> createState() => _FoundationFeedState();
 }
@@ -19,6 +18,7 @@ class _FoundationFeedState extends State<FoundationFeed> {
   String date="";
   List<String> paragraphs=[];
   List<String>? links;
+
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
@@ -33,6 +33,7 @@ class _FoundationFeedState extends State<FoundationFeed> {
     links = null;
  }
   _saveForm() async{
+    if(widget.screen == 'Feed'){
     if (formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Adding feed')),
@@ -49,6 +50,62 @@ class _FoundationFeedState extends State<FoundationFeed> {
        }
        );
     }
+    }
+    else if(widget.screen == 'Foundation'){
+      if (formKey.currentState!.validate()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Adding feed')),
+        );
+
+        await AddToDB().addFoundation(title,image,author,date,paragraphs,links).then((feed) =>
+        {
+          if(feed.isSuccesful){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Feed Added")),
+            ),
+            _reset()
+          }
+        }
+        );
+      }
+    }
+    else if(widget.screen == 'Notification'){
+      if (formKey.currentState!.validate()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Adding feed')),
+        );
+
+        await AddToDB().addNotification(title,image,author,date,paragraphs,links).then((feed) =>
+        {
+          if(feed.isSuccesful){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Feed Added")),
+            ),
+            _reset()
+          }
+        }
+        );
+      }
+    }
+    else if(widget.screen == 'Event'){
+      if (formKey.currentState!.validate()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Adding feed')),
+        );
+
+        await AddToDB().addEvent(title,image,author,date,paragraphs,links).then((feed) =>
+        {
+          if(feed.isSuccesful){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Feed Added")),
+            ),
+            _reset()
+          }
+        }
+        );
+      }
+    }
+
   }
 
   @override
