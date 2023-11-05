@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uafcapp/dto/dtobarrel.dart';
 import '../services/feedDb.dart';
 
 class FoundationFeed extends StatefulWidget {
@@ -11,24 +12,43 @@ class FoundationFeed extends StatefulWidget {
 class _FoundationFeedState extends State<FoundationFeed> {
   // late String _myActivity;
   // late String _myActivityResult;
-  String title= "";
+  // final title = TextEditingController();
+  String title="";
+  String image="";
   String? author;
   String date="";
   List<String> paragraphs=[];
   List<String>? links;
-  String message = '';
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-    // _myActivity = '';
-    // _myActivityResult = '';
   }
-
+ _reset(){
+   formKey.currentState?.reset();
+    title="";
+    author="";
+    date="";
+    paragraphs=[];
+    links = null;
+ }
   _saveForm() async{
-    var form = formKey.currentState;
-    // List feed = await AddToDB().addFeed();
-    print(form);
+    if (formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Adding feed')),
+      );
+
+        await AddToDB().addFeed(title,image,author,date,paragraphs,links).then((feed) =>
+       {
+         if(feed.isSuccesful){
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(content: Text("Feed Added")),
+          ),
+          _reset()
+         }
+       }
+       );
+    }
   }
 
   @override
@@ -60,6 +80,30 @@ class _FoundationFeedState extends State<FoundationFeed> {
                     return 'Please enter title here!';
                   } else {
                     title = value;
+                  }
+                  return null;
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 10,
+                bottom: 10,
+              ),
+              child: TextFormField(
+                textAlign: TextAlign.start,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  hintText: 'Image link',
+                ),
+                // The validator receives the text that the user has entered.
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter image link here!';
+                  } else {
+                    image = value;
                   }
                   return null;
                 },
@@ -128,7 +172,8 @@ class _FoundationFeedState extends State<FoundationFeed> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your paragraphs here!';
                   } else {
-                    message = value;
+                    // paragraphs.add(value.split(" " "));
+                    paragraphs = value.split("'");
                   }
                   return null;
                 },
@@ -146,10 +191,10 @@ class _FoundationFeedState extends State<FoundationFeed> {
                 ),
                 // The validator receives the text that the user has entered.
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null) {
                     return 'Please enter your List/Links here!';
                   } else {
-                    message = value;
+                    links = value.split(".");
                   }
                   return null;
                 },

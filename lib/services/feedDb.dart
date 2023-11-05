@@ -1,24 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "../dto/feeddto.dart";
 
+class AddedFeed {
+  bool isSuccesful;
+  String message;
+  AddedFeed(this.message, this.isSuccesful);
+}
 class AddToDB{
-   Future<List> addFeed() async {
-     List feeds = [];
-    String error;
+    Future<AddedFeed> addFeed(title,image,author,date,paragraphs,links) async {
+     // List feeds = feed;
+      String message="";
+      bool isSuccesful = false;
     try {
       await FirebaseFirestore.instance.collection('feed_db')
-      .get().then((value) {
-            // feeds.map((value) => value);
-        value.docs.forEach((element) {
-          // print(element.data());
-          feeds.add(element.data()) ;
-          // print(feeds);
-        });
-      }
-      );
+          .add({"title": title,"image": image,"author":title,"date": date,"paragraphs":paragraphs,"links":links})
+          .then((documentSnapshot) =>  {isSuccesful =true, message="success"});
+          print(isSuccesful);
+
     } catch (e) {
-      error = e.toString();
+      isSuccesful =false; message=e.toString();
+      print("$message here...");
     }
-    return feeds;
+    return AddedFeed(message,isSuccesful);
   }
 }

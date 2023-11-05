@@ -92,7 +92,7 @@ class AdminFormScreen extends StatelessWidget {
             children: [
               if(section == "Feed" || section == "Foundation" || section == "Notification" || section == "Event")...[
               const SizedBox(
-                height: 700,
+                height: 850,
                   child: FoundationFeed()
               ),
               ] else if(section =="Location"|| section =="Kids" ||section =="Men" || section =="Women" || section =="Youth")...[
