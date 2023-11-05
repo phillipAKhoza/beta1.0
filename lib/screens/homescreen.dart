@@ -3,7 +3,7 @@ import './screens.dart';
 import 'package:flutter/services.dart';
 import '../components/custom_card.dart';
 import '../dto/dtobarrel.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -97,6 +97,7 @@ class Myfeed extends StatefulWidget {
 
 class _MyfeedState extends State<Myfeed> {
   final FeedData feedData = FeedData();
+  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('users').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -193,6 +194,60 @@ class _MyfeedState extends State<Myfeed> {
               );
             },
           )
+      // StreamBuilder<QuerySnapshot>(
+      //   stream: _usersStream,
+      //   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      //     // if (snapshot.hasError) {
+      //     //   return Text('Something went wrong');
+      //     // }
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return Text("Loading");
+      //     }
+      //     return ListView.builder(
+      //       shrinkWrap: true,
+      //       physics: const NeverScrollableScrollPhysics(),
+      //       padding: const EdgeInsets.all(10.0),
+      //       itemCount: snapshot.data!.docs.length,
+      //       itemBuilder: (BuildContext context, int index) {
+      //         return Card(
+      //           child: InkWell(
+      //             child: CustomCard(
+      //               thumbnail: Container(
+      //                 decoration: BoxDecoration(
+      //                   image: DecorationImage(
+      //                     image: AssetImage(feedData.myfeeds[index].image ??
+      //                         'assets/images/logo1.png'),
+      //                     fit: BoxFit.fill,
+      //                   ),
+      //                 ),
+      //               ),
+      //               title: feedData.myfeeds[index].title,
+      //               paragraphs: feedData.myfeeds[index].paragraphs,
+      //               links: feedData.myfeeds[index].links ?? [],
+      //               author: feedData.myfeeds[index].author ?? '',
+      //               publishDate: feedData.myfeeds[index].date,
+      //             ),
+      //             onTap: () {
+      //               Navigator.of(context).push(MaterialPageRoute<dynamic>(
+      //                   builder: (BuildContext context) {
+      //                     return Feed(feed: feedData.myfeeds[index]);
+      //                   }));
+      //             },
+      //           ),
+      //         );
+      //       },
+      //     );
+      //     //   ListView(
+      //     //   children: snapshot.data!.docs.map((DocumentSnapshot document) {
+      //     //     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+      //     //     return ListTile(
+      //     //       title: Text(data['title']),
+      //     //       subtitle: Text(data['author']),
+      //     //     );
+      //     //   }).toList(),
+      //     // );
+      //   },
+      // )
         ],
       ),
     ));

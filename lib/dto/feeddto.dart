@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FeedDto {
   String? image;
   String title;
@@ -16,7 +18,37 @@ class FeedDto {
   });
 }
 
+class getFeedData {
+  bool isSuccesful;
+  String message;
+  getFeedData(this.message, this.isSuccesful);
+}
+
 class FeedData {
+  Future<dynamic> getFeeds() async{
+    bool isSuccesful= false;
+    String message="";
+    List<dynamic> feeds =[];
+    try{
+      await FirebaseFirestore.instance.collection('feed_db').get().then((querySnapshot) => {
+        querySnapshot.docs.forEach((feed) {
+          feeds.add(feed);
+        })
+      });
+      print(feeds);
+      // await FirebaseFirestore.instance.collection('feed_db')
+      //     .get().
+          // .then((documentSnapshot) =>  {isSuccesful =true, message="success"});
+      // _usersStream.map((feed) => {
+      //   feeds.add(feed);
+      // });
+      // print(_usersStream);
+    }catch(e){
+      message = e.toString();
+      print(message);
+    }
+    return feeds;
+  }
   List<FeedDto> myfeeds = [
     FeedDto(
         image: 'assets/images/logo1.png',
