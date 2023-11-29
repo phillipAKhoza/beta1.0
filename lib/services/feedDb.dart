@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import "../dto/feeddto.dart";
+// import "../dto/feeddto.dart";
 
 class AddedFeed {
   bool isSuccesful;
@@ -9,6 +9,7 @@ class AddedFeed {
 class AddToDB{
     Future<AddedFeed> addFeed(title,image,author,date,paragraphs,links) async {
      // List feeds = feed;
+     //  List<dynamic> feeds =[];
       String message="";
       bool isSuccesful = false;
     try {
@@ -16,7 +17,6 @@ class AddToDB{
           .add({"title": title,"image": image,"author":title,"date": date,"paragraphs":paragraphs,"links":links})
           .then((documentSnapshot) =>  {isSuccesful =true, message="success"});
           print(isSuccesful);
-
     } catch (e) {
       isSuccesful =false; message=e.toString();
       print("$message here...");

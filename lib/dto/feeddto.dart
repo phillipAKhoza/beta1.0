@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FeedDto {
   String? image;
   String title;
@@ -16,7 +18,18 @@ class FeedDto {
   });
 }
 
+class getFeedData {
+  Object feeds;
+  int length;
+  getFeedData(this.feeds, this.length);
+}
+
 class FeedData {
+   getFeeds() async{
+
+     return await FirebaseFirestore.instance.collection('feed_db').snapshots();
+
+  }
   List<FeedDto> myfeeds = [
     FeedDto(
         image: 'assets/images/logo1.png',
