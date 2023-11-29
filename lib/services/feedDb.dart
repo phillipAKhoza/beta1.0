@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import "../dto/feeddto.dart";
+// import "../dto/feeddto.dart";
 
 class AddedFeed {
   bool isSuccesful;
@@ -9,7 +9,7 @@ class AddedFeed {
 class AddToDB{
     Future<AddedFeed> addFeed(title,image,author,date,paragraphs,links) async {
      // List feeds = feed;
-      List<dynamic> feeds =[];
+     //  List<dynamic> feeds =[];
       String message="";
       bool isSuccesful = false;
     try {
