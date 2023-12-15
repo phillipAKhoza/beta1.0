@@ -27,7 +27,7 @@ class getFeedData {
 class FeedData {
    getFeeds() async{
 
-     return await FirebaseFirestore.instance.collection('feed_db').snapshots();
+     return await FirebaseFirestore.instance.collection('feed_db').get();
 
   }
   List<FeedDto> myfeeds = [
