@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 class VisualDto {
   String? image;
   String title;
@@ -51,6 +52,7 @@ class FoundatioData {
 }
 
 class NotificationData {
+  CollectionReference notificationsDb = FirebaseFirestore.instance.collection('notification_db');
   List<VisualDto> notifications = [
     VisualDto(
         image: 'assets/images/logo1.png',
@@ -85,6 +87,7 @@ class NotificationData {
 }
 
 class EventData {
+  CollectionReference eventsDb = FirebaseFirestore.instance.collection('event_db');
   List<VisualDto> events = [
     VisualDto(
         image: 'assets/images/logo1.png',
