@@ -38,6 +38,7 @@ class _EventsScreenState extends State<EventsScreen> {
                 fontSize: 17.0,
               ),));
             }
+
             return ListView(
                 children: documents
                     .map((doc) =>
@@ -67,6 +68,7 @@ class _EventsScreenState extends State<EventsScreen> {
               fontSize: 17.0,
             ),));
           }
+
           return const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -84,6 +86,7 @@ class _EventsScreenState extends State<EventsScreen> {
               ],
             ),
           );
+
 
           },
         ));
