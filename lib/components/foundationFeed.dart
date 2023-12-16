@@ -90,14 +90,14 @@ class _FoundationFeedState extends State<FoundationFeed> {
     else if(widget.screen == 'Event'){
       if (formKey.currentState!.validate()) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Adding feed')),
+          const SnackBar(content: Text('Adding Event')),
         );
 
         await AddToDB().addEvent(title,image,author,date,paragraphs,links).then((feed) =>
         {
           if(feed.isSuccesful){
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Feed Added")),
+              const SnackBar(content: Text("Feed Event")),
             ),
             _reset()
           }
