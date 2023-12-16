@@ -32,6 +32,13 @@ class _EventsScreenState extends State<EventsScreen> {
           if (snapshot.hasData) {
 
             final List<DocumentSnapshot> documents = snapshot.data!.docs;
+            if(documents.isEmpty){
+              return const Center(child: Text("No Events",style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17.0,
+              ),));
+            }
+
             return ListView(
                 children: documents
                     .map((doc) =>
@@ -56,9 +63,31 @@ class _EventsScreenState extends State<EventsScreen> {
             );
 
           }else if (snapshot.hasError) {
-            return const Text("It's Error!");
+            return const Center(child: Text("It's Error!",style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 17.0,
+            ),));
           }
-          return const Text("loading");
+
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'Loading...',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+          );
+
+
           },
         ));
 
