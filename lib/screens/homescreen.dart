@@ -164,7 +164,13 @@ class _MyfeedState extends State<Myfeed> {
           if (snapshot.hasData) {
             // <3> Retrieve `List<DocumentSnapshot>` from snapshot
             final List<DocumentSnapshot> documents = snapshot.data!.docs;
-            return Container(
+            if(documents.isEmpty){
+              return const Center(child: Text("No Feeds",style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17.0,
+              ),));
+            }
+            return SizedBox(
               height: 550,
               child: ListView(
                   children: documents
@@ -194,163 +200,31 @@ class _MyfeedState extends State<Myfeed> {
                       ),
                     )).toList()),
             );
-            //return ListView.builder(
-            //   shrinkWrap: true,
-            //   physics: const NeverScrollableScrollPhysics(),
-            //   padding: const EdgeInsets.all(10.0),
-            //   itemCount:documents.length,
-            //   itemBuilder: (BuildContext context, int index) {
-            //     return Card(
-            //       child: InkWell(
-            //         child: CustomCard(
-            //           thumbnail: Container(
-            //             decoration: BoxDecoration(
-            //               image: DecorationImage(
-            //                 image: AssetImage(feedData.myfeeds[index].image ??
-            //                     'assets/images/logo1.png'),
-            //                 fit: BoxFit.fill,
-            //               ),
-            //             ),
-            //           ),
-            //           title: feedData.myfeeds[index].title,
-            //           paragraphs: feedData.myfeeds[index].paragraphs,
-            //           links: feedData.myfeeds[index].links ?? [],
-            //           author: feedData.myfeeds[index].author ?? '',
-            //           publishDate: feedData.myfeeds[index].date,
-            //         ),
-            //         onTap: () {
-            //           Navigator.of(context).push(MaterialPageRoute<dynamic>(
-            //               builder: (BuildContext context) {
-            //             return Feed(feed: feedData.myfeeds[index]);
-            //           }));
-            //         },
-            //       ),
-            //     );
-            //   },
-            // )
           } else if (snapshot.hasError) {
-            return const Text("It's Error!");
+            return const Center(child: Text("It's Error!",style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 17.0,
+            ),));
           }
-          return const Text("loading");
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'Loading...',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+          );
         },
       )
-          // StreamBuilder<QuerySnapshot>(
-          //     stream: FirebaseFirestore.instance.collection('feed_db').snapshots(),
-          //     builder: (context,  AsyncSnapshot<QuerySnapshot> snapshot){
-          //       if(snapshot.hasData) {
-          //         if (snapshot.connectionState == ConnectionState.waiting) {
-          //           return const Center(
-          //             child: CircularProgressIndicator(),
-          //           );
-          //         }
-          //       }else if (snapshot.hasError){
-          //         const Text('no data');
-          //       }
-          //       // final feedSnapshot = snapshot.data?.docs;
-          //       //https://stackoverflow.com/questions/74189457/failed-to-load-providerinstaller-module-no-acceptable-module-found-local-versi
-          //       return SizedBox(
-          //         height: MediaQuery.of(context).size.height,
-          //         child: ListView(
-          //           children: snapshot.data!.docs.map((DocumentSnapshot document) {
-          //             Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-          //             return Center(
-          //               child: Container(
-          //                 width: MediaQuery.of(context).size.width / 1.2,
-          //                 height: MediaQuery.of(context).size.height / 6,
-          //                 child: Text("Title: ${data['title']}"),
-          //               ),
-          //             );
-          //           }).toList(),
-          //         ),
-          //       );
-          // })
-          // StreamBuilder<QuerySnapshot>(
-          //     stream: _usersStream,
-          //     builder: (context,  AsyncSnapshot<QuerySnapshot> snapshot){
-          //       if(snapshot.hasData) {
-          //         if (snapshot.connectionState == ConnectionState.waiting) {
-          //           return const Center(
-          //             child: Text('Loading'),
-          //           );
-          //         }
-          //       }else if (snapshot.hasError){
-          //         const Text('no data');
-          //       }
-          //       final feedSnapshot = snapshot.data?.docs;
-          //       return ListView.builder(
-          //         shrinkWrap: true,
-          //         physics: const NeverScrollableScrollPhysics(),
-          //         padding: const EdgeInsets.all(10.0),
-          //         itemCount:feedSnapshot?.length,
-          //         itemBuilder: (BuildContext context, int index) {
-          //           return Card(
-          //             child: InkWell(
-          //               child: CustomCard(
-          //                 thumbnail: Container(
-          //                   decoration: BoxDecoration(
-          //                     image: DecorationImage(
-          //                       image: AssetImage(feedData.myfeeds[0].image ??
-          //                           'assets/images/logo1.png'),
-          //                       fit: BoxFit.fill,
-          //                     ),
-          //                   ),
-          //                 ),
-          //                 title: feedData.myfeeds[0].title ?? '',
-          //                 // title: feedSnapshot?[index]['title'] ?? '',
-          //                 // paragraphs: feedSnapshot?[index]['paragraphs'] ?? [],
-          //                 // links: feedSnapshot?[index]['links'] ?? [],
-          //                 // author: feedSnapshot?[index]['author'] ?? '',
-          //                 // publishDate: feedSnapshot?[index]['date'] ?? '',
-          //                 paragraphs: feedData.myfeeds[0].paragraphs,
-          //                 links: feedData.myfeeds[0].links ?? [],
-          //                 author: feedData.myfeeds[0].author ?? '',
-          //                 publishDate: feedData.myfeeds[0].date,
-          //               ),
-          //               onTap: () {
-          //                 Navigator.of(context).push(MaterialPageRoute<dynamic>(
-          //                     builder: (BuildContext context) {
-          //                   return Feed(feed: feedData.myfeeds[index]);
-          //                 }));
-          //               },
-          //             ),
-          //           );
-          //         },
-          //       );
-          // })
-          // ListView.builder(
-          //   shrinkWrap: true,
-          //   physics: const NeverScrollableScrollPhysics(),
-          //   padding: const EdgeInsets.all(10.0),
-          //   itemCount:feedData.myfeeds.length,
-          //   itemBuilder: (BuildContext context, int index) {
-          //     return Card(
-          //       child: InkWell(
-          //         child: CustomCard(
-          //           thumbnail: Container(
-          //             decoration: BoxDecoration(
-          //               image: DecorationImage(
-          //                 image: AssetImage(feedData.myfeeds[index].image ??
-          //                     'assets/images/logo1.png'),
-          //                 fit: BoxFit.fill,
-          //               ),
-          //             ),
-          //           ),
-          //           title: feedData.myfeeds[index].title,
-          //           paragraphs: feedData.myfeeds[index].paragraphs,
-          //           links: feedData.myfeeds[index].links ?? [],
-          //           author: feedData.myfeeds[index].author ?? '',
-          //           publishDate: feedData.myfeeds[index].date,
-          //         ),
-          //         onTap: () {
-          //           Navigator.of(context).push(MaterialPageRoute<dynamic>(
-          //               builder: (BuildContext context) {
-          //             return Feed(feed: feedData.myfeeds[index]);
-          //           }));
-          //         },
-          //       ),
-          //     );
-          //   },
-          // )
 
         ],
       ),
