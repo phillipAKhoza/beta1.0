@@ -52,6 +52,7 @@ class FoundatioData {
 }
 
 class NotificationData {
+  CollectionReference notificationsDb = FirebaseFirestore.instance.collection('notification_db');
   List<VisualDto> notifications = [
     VisualDto(
         image: 'assets/images/logo1.png',

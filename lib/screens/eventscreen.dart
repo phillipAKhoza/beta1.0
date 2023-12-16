@@ -32,84 +32,36 @@ class _EventsScreenState extends State<EventsScreen> {
           if (snapshot.hasData) {
 
             final List<DocumentSnapshot> documents = snapshot.data!.docs;
-            print(documents.first);
-            return Container(
-                child: ListView(
-                    children: documents
-                        .map((doc) =>
+            return ListView(
+                children: documents
+                    .map((doc) =>
 
-                       Card(
-                      child: InkWell(
-                        child: NormalList(
-                          title: doc['title'] ?? '',
-                          paragraphs: List<String>.from(doc['paragraphs']),
-                          links:  List<String>.from(doc['links']),
-                          author: doc['author'] ?? '',
-                          publishDate: doc['date'] ?? '',
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute<dynamic>(
-                              builder: (BuildContext context) {
-                                return Event(event: doc);
-                              }));
-                        },
-                      ),
-                    )).toList()
-                )
+                   Card(
+                  child: InkWell(
+                    child: NormalList(
+                      title: doc['title'] ?? '',
+                      paragraphs: List<String>.from(doc['paragraphs']),
+                      links:  List<String>.from(doc['links']),
+                      author: doc['author'] ?? '',
+                      publishDate: doc['date'] ?? '',
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                          builder: (BuildContext context) {
+                            return Event(event: doc);
+                          }));
+                    },
+                  ),
+                )).toList()
             );
 
           }else if (snapshot.hasError) {
             return const Text("It's Error!");
           }
           return const Text("loading");
-          // return ListView.builder(
-          //   padding: const EdgeInsets.all(2.0),
-          //   itemCount: eventData.events.length,
-          //   itemBuilder: (BuildContext context, int index) {
-          //     return Card(
-          //       child: InkWell(
-          //         child: NormalList(
-          //           title: eventData.events[index].title,
-          //           paragraphs: eventData.events[index].paragraphs,
-          //           links: eventData.events[index].links ?? [],
-          //           author: eventData.events[index].author ?? '',
-          //           publishDate: eventData.events[index].date,
-          //         ),
-          //         onTap: () {
-          //           Navigator.of(context).push(MaterialPageRoute<dynamic>(
-          //               builder: (BuildContext context) {
-          //             return Event(event: eventData.events[0]);
-          //           }));
-          //         },
-          //       ),
-          //     );
-          //   },
-          // );
           },
         ));
-    //     ListView.builder(
-    //   padding: const EdgeInsets.all(2.0),
-    //   itemCount: eventData.events.length,
-    //   itemBuilder: (BuildContext context, int index) {
-    //     return Card(
-    //       child: InkWell(
-    //         child: NormalList(
-    //           title: eventData.events[index].title,
-    //           paragraphs: eventData.events[index].paragraphs,
-    //           links: eventData.events[index].links ?? [],
-    //           author: eventData.events[index].author ?? '',
-    //           publishDate: eventData.events[index].date,
-    //         ),
-    //         onTap: () {
-    //           Navigator.of(context).push(MaterialPageRoute<dynamic>(
-    //               builder: (BuildContext context) {
-    //                 return Event(event: eventData.events[0]);
-    //               }));
-    //         },
-    //       ),
-    //     );
-    //   },
-    // ));
+
   }
 }
 
@@ -173,9 +125,9 @@ class Event extends StatelessWidget {
                         ),
                       ),
                     if (event['links'] != null) const Text('\n'),
-                    for (var item in links ?? [])
+                    for (var item in links)
                       Text(
-                        '$item',
+                        item,
                         style: const TextStyle(
                           fontSize: 12.0,
                           fontWeight: FontWeight.bold,
