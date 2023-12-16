@@ -151,7 +151,7 @@ class Event extends StatelessWidget {
                         ),
                       ),
                     if (event['links'] != null) const Text('\n'),
-                    for (var item in links ?? [])
+                    for (var item in links)
                       Text(
                         '$item',
                         style: const TextStyle(
