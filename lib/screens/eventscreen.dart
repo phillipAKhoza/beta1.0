@@ -32,84 +32,62 @@ class _EventsScreenState extends State<EventsScreen> {
           if (snapshot.hasData) {
 
             final List<DocumentSnapshot> documents = snapshot.data!.docs;
-            print(documents.first);
-            return Container(
-                child: ListView(
-                    children: documents
-                        .map((doc) =>
+            if(documents.isEmpty){
+              return const Center(child: Text("No Events",style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17.0,
+              ),));
+            }
+            return ListView(
+                children: documents
+                    .map((doc) =>
 
-                       Card(
-                      child: InkWell(
-                        child: NormalList(
-                          title: doc['title'] ?? '',
-                          paragraphs: List<String>.from(doc['paragraphs']),
-                          links:  List<String>.from(doc['links']),
-                          author: doc['author'] ?? '',
-                          publishDate: doc['date'] ?? '',
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute<dynamic>(
-                              builder: (BuildContext context) {
-                                return Event(event: doc);
-                              }));
-                        },
-                      ),
-                    )).toList()
-                )
+                   Card(
+                  child: InkWell(
+                    child: NormalList(
+                      title: doc['title'] ?? '',
+                      paragraphs: List<String>.from(doc['paragraphs']),
+                      links:  List<String>.from(doc['links']),
+                      author: doc['author'] ?? '',
+                      publishDate: doc['date'] ?? '',
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                          builder: (BuildContext context) {
+                            return Event(event: doc);
+                          }));
+                    },
+                  ),
+                )).toList()
             );
 
           }else if (snapshot.hasError) {
-            return const Text("It's Error!");
+            return const Center(child: Text("It's Error!",style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 17.0,
+            ),));
           }
-          return const Text("loading");
-          // return ListView.builder(
-          //   padding: const EdgeInsets.all(2.0),
-          //   itemCount: eventData.events.length,
-          //   itemBuilder: (BuildContext context, int index) {
-          //     return Card(
-          //       child: InkWell(
-          //         child: NormalList(
-          //           title: eventData.events[index].title,
-          //           paragraphs: eventData.events[index].paragraphs,
-          //           links: eventData.events[index].links ?? [],
-          //           author: eventData.events[index].author ?? '',
-          //           publishDate: eventData.events[index].date,
-          //         ),
-          //         onTap: () {
-          //           Navigator.of(context).push(MaterialPageRoute<dynamic>(
-          //               builder: (BuildContext context) {
-          //             return Event(event: eventData.events[0]);
-          //           }));
-          //         },
-          //       ),
-          //     );
-          //   },
-          // );
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'Loading...',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+          );
+
           },
         ));
-    //     ListView.builder(
-    //   padding: const EdgeInsets.all(2.0),
-    //   itemCount: eventData.events.length,
-    //   itemBuilder: (BuildContext context, int index) {
-    //     return Card(
-    //       child: InkWell(
-    //         child: NormalList(
-    //           title: eventData.events[index].title,
-    //           paragraphs: eventData.events[index].paragraphs,
-    //           links: eventData.events[index].links ?? [],
-    //           author: eventData.events[index].author ?? '',
-    //           publishDate: eventData.events[index].date,
-    //         ),
-    //         onTap: () {
-    //           Navigator.of(context).push(MaterialPageRoute<dynamic>(
-    //               builder: (BuildContext context) {
-    //                 return Event(event: eventData.events[0]);
-    //               }));
-    //         },
-    //       ),
-    //     );
-    //   },
-    // ));
+
   }
 }
 
