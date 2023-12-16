@@ -153,7 +153,7 @@ class Event extends StatelessWidget {
                     if (event['links'] != null) const Text('\n'),
                     for (var item in links)
                       Text(
-                        '$item',
+                        item,
                         style: const TextStyle(
                           fontSize: 12.0,
                           fontWeight: FontWeight.bold,
