@@ -284,7 +284,7 @@ class Feed extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (var item in paragraphs ?? [])
+                    for (var item in paragraphs)
                       Text(
                         '\n $item',
                         maxLines: 10,
@@ -296,7 +296,7 @@ class Feed extends StatelessWidget {
                         ),
                       ),
                     // if (Feed.links.isNotEmpty) const Text('\n'),
-                    for (var item in links ?? [])
+                    for (var item in links)
                       Text(
                         item,
                         style: const TextStyle(
