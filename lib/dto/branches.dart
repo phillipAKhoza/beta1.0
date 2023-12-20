@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 class Branches {
   String church;
   List<String> address;
@@ -14,6 +15,7 @@ class Branches {
 }
 
 class BranchesData {
+  CollectionReference ministriesDb = FirebaseFirestore.instance.collection('location_db');
   List<Branches> branches = [
     Branches(
       church: "UAFC SOSHANGUVE CENTRAL",

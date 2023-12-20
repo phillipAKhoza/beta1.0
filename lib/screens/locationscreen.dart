@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../dto/branches.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});
 
@@ -9,7 +9,6 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  final List<String> entries = <String>['A', 'B', 'C'];
   final BranchesData branchesData = BranchesData();
   // final List<int> colorCodes = <int>[600, 500, 100];
 
@@ -24,39 +23,83 @@ class _LocationScreenState extends State<LocationScreen> {
           title: const Text('Branches'),
           automaticallyImplyLeading: false,
         ),
-        body: ListView.builder(
-          padding: const EdgeInsets.all(1),
-          itemCount: branchesData.branches.length,
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-                  child: Text(
-                    branchesData.branches[index].church,
-                    style: const TextStyle(
-                      fontSize: 17.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
+        body: FutureBuilder<QuerySnapshot>(
+          future: branchesData.ministriesDb.get(),
+          builder: (BuildContext context,  snapshot){
+            if (snapshot.hasData) {
+
+              final List<DocumentSnapshot> documents = snapshot.data!.docs;
+              if(documents.isEmpty){
+                return const Center(child: Text("Branches not uploaded yet!!!",style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0,
+                ),));
+              }
+
+              return ListView(
+                  children: documents
+                      .map((doc) =>
+
+                      Card(
+                        child: InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                            child: Text(
+                              doc['church'],
+                              style: const TextStyle(
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                                builder: (BuildContext context) {
+                                  return Location(branch: doc);
+                                }
+                            )
+                            );
+                          },
+                        ),
+                      )).toList()
+              );
+
+            }else if (snapshot.hasError) {
+              return const Center(child: Text("An Error Occurred!",style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17.0,
+              ),));
+            }
+
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Colors.black,
                   ),
-                ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Loading...',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
               ),
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                  return Location(branch: branchesData.branches[index]);
-                }));
-              },
             );
+
+
           },
-        ));
+        )
+    );
   }
 }
 
 class Location extends StatelessWidget {
   const Location({super.key, required this.branch});
-  final Branches branch;
+  final DocumentSnapshot branch;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +108,7 @@ class Location extends StatelessWidget {
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Text(branch.church),
+          title: Text(branch['church']),
           automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
@@ -75,12 +118,12 @@ class Location extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                  branch.church,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17.0,
-                  ),
-                )),
+                      '${branch['church']}\'s Ministry',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17.0,
+                      ),
+                    )),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
@@ -89,7 +132,7 @@ class Location extends StatelessWidget {
                   children: [
                     Center(
                       child: Text(
-                        'Under the Leadership of ${branch.leaders} ',
+                        'Under the Leadership of ${branch['leaders']} ',
                         style: const TextStyle(
                           fontSize: 12.0,
                           color: Colors.black54,
@@ -97,7 +140,7 @@ class Location extends StatelessWidget {
                         ),
                       ),
                     ),
-                    for (var item in branch.paragraphs ?? [])
+                    for (var item in branch['paragraphs'] ?? [])
                       Text(
                         '\n $item',
                         maxLines: 10,
@@ -108,15 +151,32 @@ class Location extends StatelessWidget {
                         ),
                       ),
                     const Text('\n'),
+                    // Text(
+                    //   '${ministry.church} is located at:',
+                    //   style: const TextStyle(
+                    //     fontSize: 12.0,
+                    //     fontWeight: FontWeight.bold,
+                    //     color: Colors.black54,
+                    //   ),
+                    // ),
+                    // for (var item in ministry.address)
+                    //   Text(
+                    //     item,
+                    //     style: const TextStyle(
+                    //       fontSize: 12.0,
+                    //       fontWeight: FontWeight.bold,
+                    //       color: Colors.black54,
+                    //     ),
+                    //   ),
                     Text(
-                      '${branch.church} is located at:',
+                      'Contact ${branch['church']} Ministry :',
                       style: const TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black54,
                       ),
                     ),
-                    for (var item in branch.address)
+                    for (var item in branch['contacts'])
                       Text(
                         item,
                         style: const TextStyle(
@@ -125,24 +185,7 @@ class Location extends StatelessWidget {
                           color: Colors.black54,
                         ),
                       ),
-                    Text(
-                      'Contact ${branch.church} :',
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54,
-                      ),
-                    ),
-                    for (var item in branch.contacts)
-                      Text(
-                        item,
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    const Text('\n'),
+                    // const Text('\n'),
                   ],
                 ),
               )
