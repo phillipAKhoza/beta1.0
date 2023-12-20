@@ -17,7 +17,8 @@ class VisualDto {
   });
 }
 
-class FoundatioData {
+class FoundationData {
+  CollectionReference foundationsDb = FirebaseFirestore.instance.collection('foundation_db');
   List<VisualDto> foundations = [
     VisualDto(
         image: 'assets/images/logo1.png',

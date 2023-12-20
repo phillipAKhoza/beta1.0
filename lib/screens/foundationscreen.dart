@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/custom_list.dart';
 import '../dto/visual_dto.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FoundationScreen extends StatefulWidget {
   const FoundationScreen({super.key});
@@ -10,7 +11,7 @@ class FoundationScreen extends StatefulWidget {
 }
 
 class _FoundationScreenState extends State<FoundationScreen> {
-  final FoundatioData foundationData = FoundatioData();
+  final FoundationData foundationData = FoundationData();
 
   @override
   Widget build(BuildContext context) {
@@ -23,48 +24,118 @@ class _FoundationScreenState extends State<FoundationScreen> {
           title: const Text('Foundations'),
           automaticallyImplyLeading: false,
         ),
-        body: ListView.builder(
-          padding: const EdgeInsets.all(10.0),
-          itemCount: foundationData.foundations.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-              child: InkWell(
-                child: CustomListItem(
-                  thumbnail: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                            foundationData.foundations[index].image ??
-                                'assets/images/logo1.png'),
-                        fit: BoxFit.contain,
+        body:
+        FutureBuilder<QuerySnapshot>(
+          future: foundationData.foundationsDb.get(),
+          builder: (BuildContext context,  snapshot) {
+            if (snapshot.hasData) {
+              final List<DocumentSnapshot> documents = snapshot.data!.docs;
+              if(documents.isEmpty){
+                return const Center(child: Text("No Foundation data",style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0,
+                ),));
+              }
+              return SizedBox(
+                height: 550,
+                child: ListView(
+                    children: documents
+                        .map((doc) => Card(
+                      child: InkWell(
+                        child: CustomListItem(
+                          thumbnail: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(doc['image'] ?? 'assets/images/logo1.png'),
+                                  fit: BoxFit.contain,
+                                  ),
+                            ),
+                          ),
+                          title: doc['title'],
+                          paragraphs: [],
+                          links: [],
+                          author: '',
+                          publishDate: '',
+                                  ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                              builder: (BuildContext context) {
+                                return Foundation(foundation: doc);
+                              }));
+                        },
                       ),
-                    ),
+                    )).toList()),
+              );
+            } else if (snapshot.hasError) {
+              return const Center(child: Text("It's Error!",style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17.0,
+              ),));
+            }
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Colors.black,
                   ),
-                  title: foundationData.foundations[index].title,
-                  paragraphs: foundationData.foundations[index].paragraphs,
-                  links: foundationData.foundations[index].links ?? [],
-                  author: foundationData.foundations[index].author ?? '',
-                  publishDate: foundationData.foundations[index].date,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
-                      builder: (BuildContext context) {
-                    return Foundation(
-                        foundation: foundationData.foundations[index]);
-                  }));
-                },
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Loading...',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
               ),
             );
           },
-        ));
+        )
+        // ListView.builder(
+        //   padding: const EdgeInsets.all(10.0),
+        //   itemCount: foundationData.foundations.length,
+        //   itemBuilder: (BuildContext context, int index) {
+        //     return Card(
+        //       child: InkWell(
+        //         child: CustomListItem(
+        //           thumbnail: Container(
+        //             decoration: BoxDecoration(
+        //               image: DecorationImage(
+        //                 image: AssetImage(
+        //                     foundationData.foundations[index].image ??
+        //                         'assets/images/logo1.png'),
+        //                 fit: BoxFit.contain,
+        //               ),
+        //             ),
+        //           ),
+        //           title: foundationData.foundations[index].title,
+        //           paragraphs: foundationData.foundations[index].paragraphs,
+        //           links: foundationData.foundations[index].links ?? [],
+        //           author: foundationData.foundations[index].author ?? '',
+        //           publishDate: foundationData.foundations[index].date,
+        //         ),
+        //         onTap: () {
+        //           Navigator.of(context).push(MaterialPageRoute<dynamic>(
+        //               builder: (BuildContext context) {
+        //             return Foundation(
+        //                 foundation: foundationData.foundations[index]);
+        //           }));
+        //         },
+        //       ),
+        //     );
+        //   },
+        // )
+    );
   }
 }
 
 class Foundation extends StatelessWidget {
   const Foundation({super.key, required this.foundation});
-  final VisualDto foundation;
+  final DocumentSnapshot foundation;
   @override
   Widget build(BuildContext context) {
+    final List stringParagraph = foundation['paragraphs'];
+    final List<String> paragraphs = stringParagraph[0].split(".,");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -72,7 +143,7 @@ class Foundation extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
-            foundation.title,
+            foundation['title'],
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -81,13 +152,13 @@ class Foundation extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (foundation.image != null)
+              if (foundation['image'] != null)
                 Container(
                   height: MediaQuery.of(context).size.height * 0.5,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
-                          foundation.image ?? 'assets/images/logo1.png'),
+                          foundation['image'] ?? 'assets/images/logo1.png'),
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -96,7 +167,7 @@ class Foundation extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                  foundation.title,
+                  foundation['title'],
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
@@ -108,7 +179,7 @@ class Foundation extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (var item in foundation.paragraphs)
+                    for (var item in paragraphs)
                       Text(
                         '\n $item',
                         maxLines: 10,
@@ -119,7 +190,7 @@ class Foundation extends StatelessWidget {
                         ),
                       ),
                     // if (foundation.links.isNotEmpty) const Text('\n'),
-                    for (var item in foundation.links ?? [])
+                    for (var item in foundation['links'])
                       Text(
                         item,
                         style: const TextStyle(
