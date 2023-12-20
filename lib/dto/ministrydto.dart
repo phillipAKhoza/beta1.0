@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Ministries {
   String church;
   List<String> address;
@@ -14,6 +16,7 @@ class Ministries {
 }
 
 class MinistriesData {
+  CollectionReference ministriesDb = FirebaseFirestore.instance.collection('ministry_db');
   List<Ministries> ministries = [
     Ministries(
       church: "MAN",
