@@ -27,8 +27,8 @@ class AddToDB{
     //  List<dynamic> feeds =[];
     String message="";
     bool isSuccessful = false;
-    final List<String> listParagraphs = paragraphs[0].split(".,");
-    final List<String> listContacts = contacts[0].split(".,");
+    final List<String> listParagraphs = paragraphs.split(".,");
+    final List<String> listContacts = contacts.split(".,");
     try {
       await FirebaseFirestore.instance.collection('location_db')
           .add({"church": church,"leaders": leaders,"address":address,"paragraphs": listParagraphs,"contacts":listContacts})
