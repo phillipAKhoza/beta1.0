@@ -146,7 +146,7 @@ class _MyfeedState extends State<Myfeed> {
               onTap: () {
                 Navigator.of(context).push(
                     MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                  return const Ministryscreen();
+                  return const MinistryScreen();
                 }));
               },
             ),

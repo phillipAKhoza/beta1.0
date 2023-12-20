@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import '../dto/dtobarrel.dart';
 import './screens.dart';
-
-class Ministryscreen extends StatefulWidget {
-  const Ministryscreen({super.key});
+import 'package:cloud_firestore/cloud_firestore.dart';
+class MinistryScreen extends StatefulWidget {
+  const MinistryScreen({super.key});
 
   @override
-  State<Ministryscreen> createState() => _MinistryscreenState();
+  State<MinistryScreen> createState() => _MinistryScreenState();
 }
 
-class _MinistryscreenState extends State<Ministryscreen> {
+class _MinistryScreenState extends State<MinistryScreen> {
   final MinistriesData ministriesData = MinistriesData();
 
   @override
@@ -82,45 +82,117 @@ class _MinistryscreenState extends State<Ministryscreen> {
                   }));
                 },
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(1),
-                itemCount: ministriesData.ministries.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    child: Card(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-                        child: Text(
-                          ministriesData.ministries[index].church,
-                          style: const TextStyle(
-                            fontSize: 17.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54,
-                          ),
+              // ListView.builder(
+              //   shrinkWrap: true,
+              //   padding: const EdgeInsets.all(1),
+              //   itemCount: ministriesData.ministries.length,
+              //   itemBuilder: (BuildContext context, int index) {
+              //     return InkWell(
+              //       child: Card(
+              //         child: Padding(
+              //           padding:
+              //               const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+              //           child: Text(
+              //             ministriesData.ministries[index].church,
+              //             style: const TextStyle(
+              //               fontSize: 17.0,
+              //               fontWeight: FontWeight.bold,
+              //               color: Colors.black54,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       onTap: () {
+              //         Navigator.of(context).push(MaterialPageRoute<dynamic>(
+              //             builder: (BuildContext context) {
+              //           return Ministry(
+              //               ministry: ministriesData.ministries[index]);
+              //         }));
+              //       },
+              //     );
+              //   },
+              // ),
+              FutureBuilder<QuerySnapshot>(
+                future: ministriesData.ministriesDb.get(),
+                builder: (BuildContext context,  snapshot){
+                  if (snapshot.hasData) {
+
+                    final List<DocumentSnapshot> documents = snapshot.data!.docs;
+                    if(documents.isEmpty){
+                      return const Center(child: Text(" Other Ministries not uploaded yet!!!",style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17.0,
+                      ),));
+                    }
+
+                    return ListView(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        children: documents
+                            .map((doc) =>
+
+                            Card(
+                              child: InkWell(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                                  child: Text(
+                                    doc['church'],
+                                    style: const TextStyle(
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                                      builder: (BuildContext context) {
+                                        return Ministry(ministry: doc);
+                                      }
+                                      )
+                                  );
+                                },
+                              ),
+                            )).toList()
+                    );
+
+                  }else if (snapshot.hasError) {
+                    return const Center(child: Text("An Error Occurred!",style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),));
+                  }
+
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          color: Colors.black,
                         ),
-                      ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Loading...',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
                     ),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute<dynamic>(
-                          builder: (BuildContext context) {
-                        return Minitry(
-                            ministry: ministriesData.ministries[index]);
-                      }));
-                    },
                   );
+
+
                 },
-              ),
+              )
             ],
           ),
         ));
   }
 }
 
-class Minitry extends StatelessWidget {
-  const Minitry({super.key, required this.ministry});
-  final Ministries ministry;
+class Ministry extends StatelessWidget {
+  const Ministry({super.key, required this.ministry});
+  final DocumentSnapshot ministry;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,7 +201,7 @@ class Minitry extends StatelessWidget {
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Text(ministry.church),
+          title: Text(ministry['church']),
           automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
@@ -139,7 +211,7 @@ class Minitry extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                  '${ministry.church}\'s Ministry',
+                  '${ministry['church']}\'s Ministry',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
@@ -153,7 +225,7 @@ class Minitry extends StatelessWidget {
                   children: [
                     Center(
                       child: Text(
-                        'Under the Leadership of ${ministry.leaders} ',
+                        'Under the Leadership of ${ministry['leaders']} ',
                         style: const TextStyle(
                           fontSize: 12.0,
                           color: Colors.black54,
@@ -161,7 +233,7 @@ class Minitry extends StatelessWidget {
                         ),
                       ),
                     ),
-                    for (var item in ministry.paragraphs ?? [])
+                    for (var item in ministry['paragraphs'] ?? [])
                       Text(
                         '\n $item',
                         maxLines: 10,
@@ -190,14 +262,14 @@ class Minitry extends StatelessWidget {
                     //     ),
                     //   ),
                     Text(
-                      'Contact ${ministry.church} Ministry :',
+                      'Contact ${ministry['church']} Ministry :',
                       style: const TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black54,
                       ),
                     ),
-                    for (var item in ministry.contacts)
+                    for (var item in ministry['contacts'])
                       Text(
                         item,
                         style: const TextStyle(
@@ -206,7 +278,7 @@ class Minitry extends StatelessWidget {
                           color: Colors.black54,
                         ),
                       ),
-                    const Text('\n'),
+                    // const Text('\n'),
                   ],
                 ),
               )
