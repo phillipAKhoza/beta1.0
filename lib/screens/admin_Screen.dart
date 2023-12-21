@@ -102,6 +102,11 @@ class AdminFormScreen extends StatelessWidget {
                     height: 850,
                     child: JourneyForm()
                 ),
+              ]else if(section == "Stream")...[
+                 SizedBox(
+                  height: 850,
+                  child: StreamForm(screen:section)
+                ),
               ],
             ],
           ),
