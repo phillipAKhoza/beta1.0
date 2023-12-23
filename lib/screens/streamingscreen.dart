@@ -77,7 +77,7 @@ class _StreamScreenState extends State<StreamScreen> {
                       if (mounted) {
                        setState(() {
                         cStates[id] = streamScreenController.value.isPlaying;
-                        print(streamScreenController.metadata.title);
+                        // print(streamScreenController.metadata.title);
                       });
                       }
                     }
