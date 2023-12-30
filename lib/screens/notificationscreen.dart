@@ -111,17 +111,30 @@ class Notification extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (notification['image'] != null)
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          notification['image'] ?? 'assets/images/logo1.png'),
-                      fit: BoxFit.contain,
+              if (notification['image'] != null) ...[
+                if(notification['image'].contains("http"))...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(notification['image']),
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
+                ]else ...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image:
+                        AssetImage(notification['image'] ?? 'assets/images/logo1.png'),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(

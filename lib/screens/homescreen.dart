@@ -177,10 +177,11 @@ class _MyfeedState extends State<Myfeed> {
                       .map((doc) => Card(
                       child: InkWell(
                         child: CustomCard(
-                          thumbnail: Container(
+                          thumbnail:
+                          Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage( doc['image'] ?? 'assets/images/logo1.png'),
+                                image: doc['image'].contains("http") ? NetworkImage(doc['image']) : AssetImage( doc['image'] ?? 'assets/images/logo1.png') as ImageProvider,
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -238,9 +239,9 @@ class Feed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List stringParagraph = feed['paragraphs'];
-    final List<String> paragraphs = stringParagraph[0].split(",           ");
+    final List<String> paragraphs = stringParagraph[0].split(".,");
     final List stringLinks = feed['links'];
-    final List<String> links = stringLinks[0].split(',           ');
+    final List<String> links = stringLinks[0].split('.,');
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -257,7 +258,18 @@ class Feed extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (feed['image'] != null)
+              if (feed['image'] != null) ...[
+                if(feed['image'].contains("http"))...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(feed['image']),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ]else ...[
                 Container(
                   height: MediaQuery.of(context).size.height * 0.5,
                   decoration: BoxDecoration(
@@ -268,6 +280,8 @@ class Feed extends StatelessWidget {
                     ),
                   ),
                 ),
+                ],
+              ],
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
