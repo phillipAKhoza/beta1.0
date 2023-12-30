@@ -46,7 +46,7 @@ class _FoundationScreenState extends State<FoundationScreen> {
                           thumbnail: Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage(doc['image'] ?? 'assets/images/logo1.png'),
+                                image: doc['image'].contains("http") ? NetworkImage(doc['image']) : AssetImage( doc['image'] ?? 'assets/images/logo1.png') as ImageProvider,
                                   fit: BoxFit.contain,
                                   ),
                             ),
@@ -91,40 +91,6 @@ class _FoundationScreenState extends State<FoundationScreen> {
             );
           },
         )
-        // ListView.builder(
-        //   padding: const EdgeInsets.all(10.0),
-        //   itemCount: foundationData.foundations.length,
-        //   itemBuilder: (BuildContext context, int index) {
-        //     return Card(
-        //       child: InkWell(
-        //         child: CustomListItem(
-        //           thumbnail: Container(
-        //             decoration: BoxDecoration(
-        //               image: DecorationImage(
-        //                 image: AssetImage(
-        //                     foundationData.foundations[index].image ??
-        //                         'assets/images/logo1.png'),
-        //                 fit: BoxFit.contain,
-        //               ),
-        //             ),
-        //           ),
-        //           title: foundationData.foundations[index].title,
-        //           paragraphs: foundationData.foundations[index].paragraphs,
-        //           links: foundationData.foundations[index].links ?? [],
-        //           author: foundationData.foundations[index].author ?? '',
-        //           publishDate: foundationData.foundations[index].date,
-        //         ),
-        //         onTap: () {
-        //           Navigator.of(context).push(MaterialPageRoute<dynamic>(
-        //               builder: (BuildContext context) {
-        //             return Foundation(
-        //                 foundation: foundationData.foundations[index]);
-        //           }));
-        //         },
-        //       ),
-        //     );
-        //   },
-        // )
     );
   }
 }
@@ -152,17 +118,30 @@ class Foundation extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (foundation['image'] != null)
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          foundation['image'] ?? 'assets/images/logo1.png'),
-                      fit: BoxFit.contain,
+              if (foundation['image'] != null) ...[
+                if(foundation['image'].contains("http"))...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(foundation['image']),
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
+                ]else ...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image:
+                        AssetImage(foundation['image'] ?? 'assets/images/logo1.png'),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(

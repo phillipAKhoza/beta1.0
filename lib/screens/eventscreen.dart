@@ -117,17 +117,30 @@ class Event extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (event['image'] != null)
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image:
-                          AssetImage(event['image'] ?? 'assets/images/logo1.png'),
-                      fit: BoxFit.contain,
+              if (event['image'] != null) ...[
+                if(event['image'].contains("http"))...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(event['image']),
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
+                ]else ...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image:
+                        AssetImage(event['image'] ?? 'assets/images/logo1.png'),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
