@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/normal_list.dart';
 import '../dto/visual_dto.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NoticationScreen extends StatefulWidget {
   const NoticationScreen({super.key});
@@ -23,39 +24,81 @@ class _NoticationScreenState extends State<NoticationScreen> {
           title: const Text('Notifications'),
           automaticallyImplyLeading: false,
         ),
-        body: ListView.builder(
-          padding: const EdgeInsets.all(2.0),
-          itemCount: notificationData.notifications.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-              child: InkWell(
-                child: NormalList(
-                  title: notificationData.notifications[index].title,
-                  paragraphs: notificationData.notifications[index].paragraphs,
-                  links: notificationData.notifications[index].links ?? [],
-                  author: notificationData.notifications[index].author ?? '',
-                  publishDate: notificationData.notifications[index].date,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
-                      builder: (BuildContext context) {
-                    return Notification(
-                        notification: notificationData.notifications[index]);
-                  }));
-                },
+        body:
+        FutureBuilder<QuerySnapshot>(
+          future: notificationData.notificationsDb.get(),
+          builder: (BuildContext context,  snapshot){
+            if (snapshot.hasData) {
+
+              final List<DocumentSnapshot> documents = snapshot.data!.docs;
+              if(documents.isEmpty){
+                return const Center(child: Text("No Notifications",style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0,
+                ),));
+              }
+              return ListView(
+                  children: documents
+                      .map((doc) =>
+
+                      Card(
+                        child: InkWell(
+                          child: NormalList(
+                            title: doc['title'] ?? '',
+                            paragraphs: List<String>.from(doc['paragraphs']),
+                            links:  List<String>.from(doc['links']),
+                            author: doc['author'] ?? '',
+                            publishDate: doc['date'] ?? '',
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                                builder: (BuildContext context) {
+                                  return Notification(notification: doc);
+                                }));
+                          },
+                        ),
+                      )).toList()
+              );
+
+            }else if (snapshot.hasError) {
+              return const Center(child: Text("It's Error!",style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17.0,
+              ),));
+            }
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Loading...',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
               ),
             );
           },
-        ));
+        )
+    );
   }
 }
 
 class Notification extends StatelessWidget {
   const Notification({super.key, required this.notification});
-  final VisualDto notification;
+  final DocumentSnapshot notification;
 
   @override
   Widget build(BuildContext context) {
+    final List stringParagraph = notification['paragraphs'];
+    final List<String> paragraphs = stringParagraph[0].split(".,");
+    // final List stringLinks = notification['links'];
+    // final List<String> links = stringLinks[0].split('.,');
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -68,22 +111,35 @@ class Notification extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (notification.image != null)
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          notification.image ?? 'assets/images/logo1.png'),
-                      fit: BoxFit.contain,
+              if (notification['image'] != null) ...[
+                if(notification['image'].contains("http"))...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(notification['image']),
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
+                ]else ...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image:
+                        AssetImage(notification['image'] ?? 'assets/images/logo1.png'),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                  notification.title,
+                  notification['title'],
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
@@ -95,7 +151,7 @@ class Notification extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (var item in notification.paragraphs)
+                    for (var item in paragraphs)
                       Text(
                         '\n $item',
                         maxLines: 10,
@@ -106,7 +162,7 @@ class Notification extends StatelessWidget {
                         ),
                       ),
                     // if (notification.links.isNotEmpty) const Text('\n'),
-                    for (var item in notification.links ?? [])
+                    for (var item in notification['links'] ?? [])
                       Text(
                         item,
                         style: const TextStyle(
@@ -116,9 +172,9 @@ class Notification extends StatelessWidget {
                         ),
                       ),
                     const Text('\n'),
-                    if (notification.author != null)
+                    if (notification['author'] != null)
                       Text(
-                        notification.author ?? '',
+                        notification['author'] ?? '',
                         style: const TextStyle(
                           fontSize: 12.0,
                           color: Colors.black54,
@@ -126,7 +182,7 @@ class Notification extends StatelessWidget {
                         ),
                       ),
                     Text(
-                      notification.date,
+                      notification['date'],
                       style: const TextStyle(
                         fontSize: 12.0,
                         color: Colors.black54,

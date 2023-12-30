@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 class Branches {
   String church;
   List<String> address;
@@ -14,6 +15,7 @@ class Branches {
 }
 
 class BranchesData {
+  CollectionReference ministriesDb = FirebaseFirestore.instance.collection('location_db');
   List<Branches> branches = [
     Branches(
       church: "UAFC SOSHANGUVE CENTRAL",
@@ -35,7 +37,7 @@ class BranchesData {
         'We are incredibly thankful for the volunteers who serve in our churches and communities each week. Those who serve in children’s ministry, youth ministry, women ministry, worship, pastoral care and our community care programs including outreach programs and evangelism.',
         'We serve an amazing and awesome God! The journey of our Church gives witness to the mighty hand of God. Instead of gazing endlessly into the past, it is our desire for God to continue His mighty work in and through our Church. Our relationship with Him is never static and does not cease with our past experiences. Finally, in all of the challenges and possibilities that confront us, the church is not staff, buildings or budgets; it is people – you and me – called and gifted by God, all of us unique and all of us needed. Let us trust God and do the ministry which God has entrusted to us'
       ],
-      leaders: 'Apostole ABC and DEF',
+      leaders: 'Apostle ABC and DEF',
     ),
     Branches(
       church: "UAFC RIVERSIDE CENTRAL",

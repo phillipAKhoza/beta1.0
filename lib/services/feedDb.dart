@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import "../dto/feeddto.dart";
 
 class AddedFeed {
   bool isSuccesful;
@@ -16,10 +15,8 @@ class AddToDB{
       await FirebaseFirestore.instance.collection('feed_db')
           .add({"title": title,"image": image,"author":title,"date": date,"paragraphs":paragraphs,"links":links})
           .then((documentSnapshot) =>  {isSuccesful =true, message="success"});
-          print(isSuccesful);
     } catch (e) {
       isSuccesful =false; message=e.toString();
-      print("$message here...");
     }
     return AddedFeed(message,isSuccesful);
   }
@@ -31,11 +28,9 @@ class AddToDB{
         await FirebaseFirestore.instance.collection('foundation_db')
             .add({"title": title,"image": image,"author":title,"date": date,"paragraphs":paragraphs,"links":links})
             .then((documentSnapshot) =>  {isSuccesful =true, message="success"});
-        print(isSuccesful);
 
       } catch (e) {
         isSuccesful =false; message=e.toString();
-        print("$message here...");
       }
       return AddedFeed(message,isSuccesful);
     }
@@ -47,11 +42,9 @@ class AddToDB{
         await FirebaseFirestore.instance.collection('notification_db')
             .add({"title": title,"image": image,"author":title,"date": date,"paragraphs":paragraphs,"links":links})
             .then((documentSnapshot) =>  {isSuccesful =true, message="success"});
-        print(isSuccesful);
 
       } catch (e) {
         isSuccesful =false; message=e.toString();
-        print("$message here...");
       }
       return AddedFeed(message,isSuccesful);
     }
@@ -63,11 +56,9 @@ class AddToDB{
         await FirebaseFirestore.instance.collection('event_db')
             .add({"title": title,"image": image,"author":title,"date": date,"paragraphs":paragraphs,"links":links})
             .then((documentSnapshot) =>  {isSuccesful =true, message="success"});
-        print(isSuccesful);
 
       } catch (e) {
         isSuccesful =false; message=e.toString();
-        print("$message here...");
       }
       return AddedFeed(message,isSuccesful);
     }

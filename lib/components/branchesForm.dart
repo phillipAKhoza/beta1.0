@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
+import '../services/churchDb.dart';
 
 class BranchesForm extends StatefulWidget {
-  const BranchesForm({super.key});
-
+  const BranchesForm({super.key,required this.screen});
+  final String screen;
   @override
   State<BranchesForm> createState() => _BranchesFormState();
 }
@@ -14,18 +14,61 @@ class _BranchesFormState extends State<BranchesForm> {
   String church= "";
   String leaders="";
   String address="";
-  List<String> paragraphs=[];
-  List<String>? contacts;
+  String paragraphs="";
+  String contacts='';
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-    // _myActivity = '';
-    // _myActivityResult = '';
   }
 
-  _saveForm() {
-    // var form = formKey.currentState;
+  _reset(){
+    formKey.currentState?.reset();
+    church="";
+    leaders="";
+    address="";
+    paragraphs="";
+    contacts ='';
+  }
+
+  _saveForm() async{
+    // section =="Kids" ||section =="Men" || section =="Women" || section =="Youth"
+    if(widget.screen == 'Ministries'){
+      if (formKey.currentState!.validate()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Adding Ministry')),
+        );
+        await AddToDB().addMinistry(church,leaders,address,paragraphs,contacts).then((ministry) =>
+        {
+          if(ministry.isSuccessful){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Ministry Added")),
+            ),
+            _reset()
+          }
+        }
+        );
+      }
+    }
+    else if(widget.screen == 'Location'){
+      if (formKey.currentState!.validate()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Adding Location')),
+        );
+
+        await AddToDB().addLocation(church,leaders,address,paragraphs,contacts).then((ministry) =>
+        {
+          if(ministry.isSuccessful){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Location Added")),
+            ),
+            _reset()
+          }
+        }
+        );
+      }
+    }
+
   }
 
   @override
@@ -125,7 +168,7 @@ class _BranchesFormState extends State<BranchesForm> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your paragraphs here!';
                   } else {
-                    paragraphs.insert(0, value);
+                    paragraphs=value;
                   }
                   return null;
                 },
@@ -139,14 +182,14 @@ class _BranchesFormState extends State<BranchesForm> {
                 textAlign: TextAlign.start,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  hintText: 'List/Links',
+                  hintText: 'Contacts (Phone & Email)',
                 ),
                 // The validator receives the text that the user has entered.
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your List/Links here!';
+                    return 'Please enter church/ministry Contacts!';
                   } else {
-                    contacts?.insert(0, value);
+                    contacts=value;
                   }
                   return null;
                 },

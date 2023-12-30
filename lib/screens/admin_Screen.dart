@@ -28,10 +28,7 @@ class _AdminItemsState extends State<AdminItems> {
     'Salvation Journey',
     'Foundation',
     'Location',
-    'Kids',
-    'Men',
-    'Women',
-    'Youth',
+    'Ministries',
   ];
   final List<String> path = <String>[
     '/admin_Feeds',
@@ -95,15 +92,20 @@ class AdminFormScreen extends StatelessWidget {
                 height: 850,
                   child:  FoundationFeed(screen:section)
               ),
-              ] else if(section =="Location"|| section =="Kids" ||section =="Men" || section =="Women" || section =="Youth")...[
-                const SizedBox(
+              ] else if(section =="Location"|| section =="Ministries")...[
+                 SizedBox(
                     height: 850,
-                    child: BranchesForm()
+                    child: BranchesForm(screen:section)
                 ),
               ]else if(section == "Salvation Journey")...[
                 const SizedBox(
                     height: 850,
                     child: JourneyForm()
+                ),
+              ]else if(section == "Stream")...[
+                 SizedBox(
+                  height: 850,
+                  child: StreamForm(screen:section)
                 ),
               ],
             ],

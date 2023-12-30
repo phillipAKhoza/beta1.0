@@ -97,7 +97,6 @@ class Myfeed extends StatefulWidget {
 
 class _MyfeedState extends State<Myfeed> {
   final FeedData feedData = FeedData();
-  final Stream<QuerySnapshot> _usersStream= FirebaseFirestore.instance.collection('feed_db').snapshots();
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -147,7 +146,7 @@ class _MyfeedState extends State<Myfeed> {
               onTap: () {
                 Navigator.of(context).push(
                     MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                  return const Ministryscreen();
+                  return const MinistryScreen();
                 }));
               },
             ),
@@ -159,92 +158,74 @@ class _MyfeedState extends State<Myfeed> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          StreamBuilder<QuerySnapshot>(
-              stream: _usersStream,
-              builder: (context,  AsyncSnapshot<QuerySnapshot> snapshot){
-                if(snapshot.hasData) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: Text('Loading'),
-                    );
-                  }
-                }else if (snapshot.hasError){
-                  const Text('no data');
-                }
-                final feedSnapshot = snapshot.data?.docs;
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(10.0),
-                  itemCount:feedSnapshot?.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
+      FutureBuilder<QuerySnapshot>(
+        future: FirebaseFirestore.instance.collection('feed_db').get(),
+        builder: (BuildContext context,  snapshot) {
+          if (snapshot.hasData) {
+            // <3> Retrieve `List<DocumentSnapshot>` from snapshot
+            final List<DocumentSnapshot> documents = snapshot.data!.docs;
+            if(documents.isEmpty){
+              return const Center(child: Text("No Feeds",style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17.0,
+              ),));
+            }
+            return SizedBox(
+              height: 550,
+              child: ListView(
+                  children: documents
+                      .map((doc) => Card(
                       child: InkWell(
                         child: CustomCard(
-                          thumbnail: Container(
+                          thumbnail:
+                          Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage(feedData.myfeeds[0].image ??
-                                    'assets/images/logo1.png'),
+                                image: doc['image'].contains("http") ? NetworkImage(doc['image']) : AssetImage( doc['image'] ?? 'assets/images/logo1.png') as ImageProvider,
                                 fit: BoxFit.fill,
                               ),
                             ),
                           ),
-                          title: feedSnapshot?[index]['title'] ?? '',
-                          // paragraphs: feedSnapshot?[index]['paragraphs'] ?? [],
-                          // links: feedSnapshot?[index]['links'] ?? [],
-                          // author: feedSnapshot?[index]['author'] ?? '',
-                          // publishDate: feedSnapshot?[index]['date'] ?? '',
-                          paragraphs: feedData.myfeeds[0].paragraphs,
-                          links: feedData.myfeeds[0].links ?? [],
-                          author: feedData.myfeeds[0].author ?? '',
-                          publishDate: feedData.myfeeds[0].date,
+                          title: doc['title'],
+                          paragraphs: [], //doc['paragraphs'] ??
+                          links:  [], //doc['links'] ??
+                          author:   '',
+                          publishDate: '',
                         ),
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute<dynamic>(
                               builder: (BuildContext context) {
-                            return Feed(feed: feedData.myfeeds[index]);
+                            return Feed(feed: doc);
                           }));
                         },
                       ),
-                    );
-                  },
-                );
-          })
-          // ListView.builder(
-          //   shrinkWrap: true,
-          //   physics: const NeverScrollableScrollPhysics(),
-          //   padding: const EdgeInsets.all(10.0),
-          //   itemCount:feedData.myfeeds.length,
-          //   itemBuilder: (BuildContext context, int index) {
-          //     return Card(
-          //       child: InkWell(
-          //         child: CustomCard(
-          //           thumbnail: Container(
-          //             decoration: BoxDecoration(
-          //               image: DecorationImage(
-          //                 image: AssetImage(feedData.myfeeds[index].image ??
-          //                     'assets/images/logo1.png'),
-          //                 fit: BoxFit.fill,
-          //               ),
-          //             ),
-          //           ),
-          //           title: feedData.myfeeds[index].title,
-          //           paragraphs: feedData.myfeeds[index].paragraphs,
-          //           links: feedData.myfeeds[index].links ?? [],
-          //           author: feedData.myfeeds[index].author ?? '',
-          //           publishDate: feedData.myfeeds[index].date,
-          //         ),
-          //         onTap: () {
-          //           Navigator.of(context).push(MaterialPageRoute<dynamic>(
-          //               builder: (BuildContext context) {
-          //             return Feed(feed: feedData.myfeeds[index]);
-          //           }));
-          //         },
-          //       ),
-          //     );
-          //   },
-          // )
+                    )).toList()),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(child: Text("It's Error!",style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 17.0,
+            ),));
+          }
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'Loading...',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+          );
+        },
+      )
 
         ],
       ),
@@ -254,9 +235,13 @@ class _MyfeedState extends State<Myfeed> {
 
 class Feed extends StatelessWidget {
   const Feed({super.key, required this.feed});
-  final FeedDto feed;
+  final DocumentSnapshot feed;
   @override
   Widget build(BuildContext context) {
+    final List stringParagraph = feed['paragraphs'];
+    final List<String> paragraphs = stringParagraph[0].split(".,");
+    final List stringLinks = feed['links'];
+    final List<String> links = stringLinks[0].split('.,');
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -264,7 +249,7 @@ class Feed extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
-            feed.title,
+            feed['title'] ?? "Title",
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -273,22 +258,35 @@ class Feed extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (feed.image != null)
+              if (feed['image'] != null) ...[
+                if(feed['image'].contains("http"))...[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(feed['image']),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ]else ...[
                 Container(
                   height: MediaQuery.of(context).size.height * 0.5,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image:
-                          AssetImage(feed.image ?? 'assets/images/logo1.png'),
+                          AssetImage(feed['image'] ?? 'assets/images/logo1.png'),
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
+                ],
+              ],
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                  feed.title,
+                      feed['title'] ?? "Title",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
@@ -300,10 +298,11 @@ class Feed extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (var item in feed.paragraphs)
+                    for (var item in paragraphs)
                       Text(
                         '\n $item',
                         maxLines: 10,
+                        textAlign: TextAlign.left,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 12.0,
@@ -311,7 +310,7 @@ class Feed extends StatelessWidget {
                         ),
                       ),
                     // if (Feed.links.isNotEmpty) const Text('\n'),
-                    for (var item in feed.links ?? [])
+                    for (var item in links)
                       Text(
                         item,
                         style: const TextStyle(
