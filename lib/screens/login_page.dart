@@ -171,7 +171,7 @@ class _LoginFormState extends State<LoginForm> {
                                   Navigator.of(context).push(
                                       MaterialPageRoute<dynamic>(
                                           builder: (BuildContext context) {
-                                    return const MainApp();
+                                    return  MainApp(isAdmin: auth.isAdmin);
                                   }))
                                 }
                               else

@@ -9,9 +9,9 @@ class EventsScreen extends StatefulWidget {
   @override
   State<EventsScreen> createState() => _EventsScreenState();
 }
-
+final EventData eventData = EventData();
 class _EventsScreenState extends State<EventsScreen> {
-  final EventData eventData = EventData();
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +101,18 @@ class Event extends StatelessWidget {
   final DocumentSnapshot event;
   @override
   Widget build(BuildContext context) {
+    reset(){
+      Navigator.pop(context);
+    }
+
+    deleteDoc(id) async{
+      eventData.eventsDb.doc(id).delete().then((value) => {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feed removed")),
+        ),
+        reset()
+      });
+    }
     final List stringParagraph = event['paragraphs'];
     final List<String> paragraphs = stringParagraph[0].split(".,");
     final List stringLinks = event['links'];
@@ -197,7 +209,17 @@ class Event extends StatelessWidget {
                     ),
                   ],
                 ),
-              )
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                  ),
+                  onPressed:() => deleteDoc(event.id),
+                  child: const Text('Delete'),
+                ),
+              ),
             ],
           ),
         ));

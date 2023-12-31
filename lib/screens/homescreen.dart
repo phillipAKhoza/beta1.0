@@ -5,8 +5,8 @@ import '../components/custom_card.dart';
 import '../dto/dtobarrel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
+  const HomeScreen({super.key,required this.isAdmin});
+  final bool isAdmin;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -14,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    print(widget.isAdmin);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () => {
               Navigator.of(context).push(
                   MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                return const NoticationScreen();
+                return const NotificationScreen();
               }))
             },
           ), //IconButton
