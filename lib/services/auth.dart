@@ -47,7 +47,7 @@ class Authentication {
     bool _isValid = false;
     String message = 'Success';
     try {
-      final credential = await FirebaseAuth.instance
+       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
             email: email,
             password: password,
@@ -74,7 +74,7 @@ class Authentication {
     bool _isValid = false;
     String message = 'Success';
     try {
-      final credential = await FirebaseAuth.instance
+       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password)
           .then((value) => {_isValid = true});
     } on FirebaseAuthException catch (e) {
