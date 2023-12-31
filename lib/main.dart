@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './screens/screens.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import '../services/auth.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,15 +30,15 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
-        '/app': (context) => const MainApp(isAdmin: false),
+        '/app': (context) => const MainApp(),
         '/login': (context) => const LoginScreen(),
         '/login_page': (context) => const LoginPage(),
         '/register': (context) => const RegisterScreen(),
-        '/home': (context) =>   const HomeScreen(isAdmin: false),
-        '/chat': (context) =>  const HomeScreen(isAdmin: false),
-        '/liveStream': (context) =>  const HomeScreen(isAdmin: false),
-        '/serve': (context) =>  const HomeScreen(isAdmin: false),
-        '/more': (context) =>  const HomeScreen(isAdmin: false),
+        '/home': (context) =>   const HomeScreen(),
+        '/chat': (context) =>  const HomeScreen(),
+        '/liveStream': (context) =>  const HomeScreen(),
+        '/serve': (context) =>  const HomeScreen(),
+        '/more': (context) =>  const HomeScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/technical': (context) => const TechnicalScreen(),
         '/foundation': (context) => const FoundationScreen(),

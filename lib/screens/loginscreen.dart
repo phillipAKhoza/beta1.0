@@ -55,12 +55,6 @@ class LoginScreen extends StatelessWidget {
                 // loginMethod: AuthService().googleLogin,
               ),
             ),
-            // const LoginButton(
-            //   text: 'Sign in with Google',
-            //   icon: Icons.g_translate,
-            //   color: Colors.blue,
-            //   // loginMethod: AuthService().googleLogin,
-            // ),
             InkWell(
               onTap: _register,
               child: const Align(
@@ -106,8 +100,9 @@ class LoginButton extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           backgroundColor: color,
         ),
-        onPressed: () => {
-          Navigator.popAndPushNamed(context, "/app"),
+        onPressed: () async{
+          // Navigator.popAndPushNamed(context, "/app"),
+          await Authentication().signInWithGoogle();
         },
         label: Text(text, textAlign: TextAlign.center),
       ),

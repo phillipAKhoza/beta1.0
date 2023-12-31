@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import './screens.dart';
 import 'package:flutter/services.dart';
 import '../components/custom_card.dart';
-import '../dto/dtobarrel.dart';
+import '../dto/dto-barrel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/auth.dart';
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key,required this.isAdmin});
-  final bool isAdmin;
+  const HomeScreen({super.key});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -14,7 +15,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    print(widget.isAdmin);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -187,8 +187,8 @@ class _MyfeedState extends State<Myfeed> {
                             ),
                           ),
                           title: doc['title'],
-                          paragraphs: [], //doc['paragraphs'] ??
-                          links:  [], //doc['links'] ??
+                          paragraphs: const [], //doc['paragraphs'] ??
+                          links:  const [], //doc['links'] ??
                           author:   '',
                           publishDate: '',
                         ),
@@ -232,10 +232,22 @@ class _MyfeedState extends State<Myfeed> {
     ));
   }
 }
-
-class Feed extends StatelessWidget {
+final AdminData adminData = AdminData();
+class Feed extends StatefulWidget {
   const Feed({super.key, required this.feed});
   final DocumentSnapshot feed;
+  @override
+  State<Feed> createState() => _FeedState();
+}
+
+class _FeedState extends State<Feed> {
+  bool? isAdmin = CurrentUser.getAdminStatus();
+
+  @override
+  void initState() {
+    super.initState();
+    isAdmin = CurrentUser.getAdminStatus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -251,9 +263,9 @@ class Feed extends StatelessWidget {
         reset()
       });
     }
-    final List stringParagraph = feed['paragraphs'];
+    final List stringParagraph = widget.feed['paragraphs'];
     final List<String> paragraphs = stringParagraph[0].split(".,");
-    final List stringLinks = feed['links'];
+    final List stringLinks = widget.feed['links'];
     final List<String> links = stringLinks[0].split('.,');
     return Scaffold(
         appBar: AppBar(
@@ -262,7 +274,7 @@ class Feed extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
-            feed['title'] ?? "Title",
+            widget.feed['title'] ?? "Title",
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -271,13 +283,13 @@ class Feed extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (feed['image'] != null) ...[
-                if(feed['image'].contains("http"))...[
+              if (widget.feed['image'] != null) ...[
+                if(widget.feed['image'].contains("http"))...[
                   Container(
                     height: MediaQuery.of(context).size.height * 0.5,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(feed['image']),
+                        image: NetworkImage(widget.feed['image']),
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -288,7 +300,7 @@ class Feed extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image:
-                          AssetImage(feed['image'] ?? 'assets/images/logo1.png'),
+                          AssetImage(widget.feed['image'] ?? 'assets/images/logo1.png'),
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -299,7 +311,7 @@ class Feed extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                      feed['title'] ?? "Title",
+                      widget.feed['title'] ?? "Title",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
@@ -335,16 +347,19 @@ class Feed extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
+              if(isAdmin == true)...[
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
+                    onPressed:() => deleteDoc(widget.feed.id),
+                    child: const Text('Delete'),
                   ),
-                  onPressed:() => deleteDoc(feed.id),
-                  child: const Text('Delete'),
                 ),
-              ),
+              ]
+
             ],
           ),
         ));
@@ -360,7 +375,6 @@ class MyJourney extends StatefulWidget {
 
 class _MyJourneyState extends State<MyJourney> {
   final JourneyData journeyData = JourneyData();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

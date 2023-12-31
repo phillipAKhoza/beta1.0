@@ -191,7 +191,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                                   Navigator.of(context).push(
                                       MaterialPageRoute<dynamic>(
                                           builder: (BuildContext context) {
-                                    return MainApp(isAdmin: auth.isAdmin);
+                                    return const MainApp();
                                   }))
                                 }
                               else

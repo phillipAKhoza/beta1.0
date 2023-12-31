@@ -160,8 +160,8 @@ class _LoginFormState extends State<LoginForm> {
                     setState(() {
                       isLoading = true;
                     });
-                    Authentication()
-                        .signInWithEmaiAndPassword(username, pass)
+                    await Authentication()
+                        .signInWithEmailAndPassword(username, pass)
                         .then((auth) => {
                               setState(() {
                                 isLoading = false;
@@ -171,7 +171,7 @@ class _LoginFormState extends State<LoginForm> {
                                   Navigator.of(context).push(
                                       MaterialPageRoute<dynamic>(
                                           builder: (BuildContext context) {
-                                    return  MainApp(isAdmin: auth.isAdmin);
+                                    return  const MainApp();
                                   }))
                                 }
                               else
