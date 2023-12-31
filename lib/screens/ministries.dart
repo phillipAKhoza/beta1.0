@@ -9,9 +9,8 @@ class MinistryScreen extends StatefulWidget {
   @override
   State<MinistryScreen> createState() => _MinistryScreenState();
 }
-
+final MinistriesData ministriesData = MinistriesData();
 class _MinistryScreenState extends State<MinistryScreen> {
-  final MinistriesData ministriesData = MinistriesData();
 
   @override
   Widget build(BuildContext context) {
@@ -83,36 +82,7 @@ class _MinistryScreenState extends State<MinistryScreen> {
                   }));
                 },
               ),
-              // ListView.builder(
-              //   shrinkWrap: true,
-              //   padding: const EdgeInsets.all(1),
-              //   itemCount: ministriesData.ministries.length,
-              //   itemBuilder: (BuildContext context, int index) {
-              //     return InkWell(
-              //       child: Card(
-              //         child: Padding(
-              //           padding:
-              //               const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-              //           child: Text(
-              //             ministriesData.ministries[index].church,
-              //             style: const TextStyle(
-              //               fontSize: 17.0,
-              //               fontWeight: FontWeight.bold,
-              //               color: Colors.black54,
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-              //       onTap: () {
-              //         Navigator.of(context).push(MaterialPageRoute<dynamic>(
-              //             builder: (BuildContext context) {
-              //           return Ministry(
-              //               ministry: ministriesData.ministries[index]);
-              //         }));
-              //       },
-              //     );
-              //   },
-              // ),
+
               FutureBuilder<QuerySnapshot>(
                 future: ministriesData.ministriesDb.get(),
                 builder: (BuildContext context,  snapshot){
@@ -196,6 +166,18 @@ class Ministry extends StatelessWidget {
   final DocumentSnapshot ministry;
   @override
   Widget build(BuildContext context) {
+    reset(){
+      Navigator.pop(context);
+    }
+
+    deleteDoc(id) async{
+      foundationData.foundationsDb.doc(id).delete().then((value) => {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feed removed")),
+        ),
+        reset()
+      });
+    }
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -245,23 +227,6 @@ class Ministry extends StatelessWidget {
                         ),
                       ),
                     const Text('\n'),
-                    // Text(
-                    //   '${ministry.church} is located at:',
-                    //   style: const TextStyle(
-                    //     fontSize: 12.0,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: Colors.black54,
-                    //   ),
-                    // ),
-                    // for (var item in ministry.address)
-                    //   Text(
-                    //     item,
-                    //     style: const TextStyle(
-                    //       fontSize: 12.0,
-                    //       fontWeight: FontWeight.bold,
-                    //       color: Colors.black54,
-                    //     ),
-                    //   ),
                     Text(
                       'Contact ${ministry['church']} Ministry :',
                       style: const TextStyle(
@@ -282,7 +247,17 @@ class Ministry extends StatelessWidget {
                     // const Text('\n'),
                   ],
                 ),
-              )
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                  ),
+                  onPressed:() => deleteDoc(ministry.id),
+                  child: const Text('Delete'),
+                ),
+              ),
             ],
           ),
         ));

@@ -5,8 +5,8 @@ import '../components/custom_card.dart';
 import '../dto/dtobarrel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
+  const HomeScreen({super.key,required this.isAdmin});
+  final bool isAdmin;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -14,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    print(widget.isAdmin);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -33,11 +34,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ), //IconButton
           IconButton(
             icon: const Icon(Icons.notifications),
-            tooltip: 'nitifications Icon',
+            tooltip: 'notifications Icon',
             onPressed: () => {
               Navigator.of(context).push(
                   MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                return const NoticationScreen();
+                return const NotificationScreen();
               }))
             },
           ), //IconButton
@@ -94,9 +95,8 @@ class Myfeed extends StatefulWidget {
   @override
   State<Myfeed> createState() => _MyfeedState();
 }
-
+final FeedData feedData = FeedData();
 class _MyfeedState extends State<Myfeed> {
-  final FeedData feedData = FeedData();
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -159,7 +159,7 @@ class _MyfeedState extends State<Myfeed> {
             ),
           ),
       FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('feed_db').get(),
+        future: feedData.feedsDb.get(),
         builder: (BuildContext context,  snapshot) {
           if (snapshot.hasData) {
             // <3> Retrieve `List<DocumentSnapshot>` from snapshot
@@ -236,8 +236,21 @@ class _MyfeedState extends State<Myfeed> {
 class Feed extends StatelessWidget {
   const Feed({super.key, required this.feed});
   final DocumentSnapshot feed;
+
   @override
   Widget build(BuildContext context) {
+    reset(){
+      Navigator.pop(context);
+    }
+
+    deleteDoc(id) async{
+      feedData.feedsDb.doc(id).delete().then((value) => {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feed removed")),
+        ),
+        reset()
+      });
+    }
     final List stringParagraph = feed['paragraphs'];
     final List<String> paragraphs = stringParagraph[0].split(".,");
     final List stringLinks = feed['links'];
@@ -321,7 +334,17 @@ class Feed extends StatelessWidget {
                       ),
                   ],
                 ),
-              )
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                  ),
+                  onPressed:() => deleteDoc(feed.id),
+                  child: const Text('Delete'),
+                ),
+              ),
             ],
           ),
         ));

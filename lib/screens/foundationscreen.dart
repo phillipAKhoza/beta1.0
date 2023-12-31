@@ -9,9 +9,8 @@ class FoundationScreen extends StatefulWidget {
   @override
   State<FoundationScreen> createState() => _FoundationScreenState();
 }
-
+final FoundationData foundationData = FoundationData();
 class _FoundationScreenState extends State<FoundationScreen> {
-  final FoundationData foundationData = FoundationData();
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +99,18 @@ class Foundation extends StatelessWidget {
   final DocumentSnapshot foundation;
   @override
   Widget build(BuildContext context) {
+    reset(){
+      Navigator.pop(context);
+    }
+
+    deleteDoc(id) async{
+      foundationData.foundationsDb.doc(id).delete().then((value) => {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feed removed")),
+        ),
+        reset()
+      });
+    }
     final List stringParagraph = foundation['paragraphs'];
     final List<String> paragraphs = stringParagraph[0].split(".,");
     return Scaffold(
@@ -180,7 +191,17 @@ class Foundation extends StatelessWidget {
                       ),
                   ],
                 ),
-              )
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                  ),
+                  onPressed:() => deleteDoc(foundation.id),
+                  child: const Text('Delete'),
+                ),
+              ),
             ],
           ),
         ));

@@ -3,7 +3,7 @@ import './screens.dart';
 import '../services/auth.dart';
 
 class MoreScreen extends StatelessWidget {
-  const MoreScreen({super.key});
+  const MoreScreen(bool isAdmin,  {super.key});
 
   @override
   Widget build(BuildContext context) {
