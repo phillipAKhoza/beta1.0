@@ -3,8 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FormatResult {
   bool isValid;
+  bool isAdmin;
   String message;
-  FormatResult(this.isValid, this.message);
+  FormatResult(this.isValid,this.isAdmin, this.message);
 }
 
 class UserResult {
@@ -44,7 +45,8 @@ class Authentication {
   }
 
   Future<FormatResult> userRegistration(String email, String password) async {
-    bool _isValid = false;
+    bool isValid = false;
+    bool isAdmin= false;
     String message = 'Success';
     try {
        await FirebaseAuth.instance
@@ -52,7 +54,7 @@ class Authentication {
             email: email,
             password: password,
           )
-          .then((value) => _isValid = true);
+          .then((value) => isValid = true);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         message = 'The password provided is too weak.';
@@ -62,7 +64,7 @@ class Authentication {
     } catch (e) {
       message = e.toString();
     }
-    return FormatResult(_isValid, message);
+    return FormatResult(isValid,isAdmin, message);
   }
 
   Future<void> signOut() async {
@@ -71,23 +73,36 @@ class Authentication {
 
   Future<FormatResult> signInWithEmaiAndPassword(
       String email, String password) async {
-    bool _isValid = false;
+    bool isValid = false;
+    bool isAdmin = false;
     String message = 'Success';
     try {
        await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) => {_isValid = true});
+          .then((value) => {
+            isValid = true,
+            if(value.user !=null){
+             FirebaseFirestore.instance.collection('admin_db').doc(value.user!.uid).get().then((DocumentSnapshot documentSnapshot) =>
+                {
+                   if(documentSnapshot.exists){
+                     isAdmin = true
+                   }
+                }
+             )
+            }
+
+          });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         message = 'No user found for that email.';
-        _isValid = false;
+        isValid = false;
       } else if (e.code == 'wrong-password') {
         message = 'Wrong password provided for that user.';
-        _isValid = false;
+        isValid = false;
       } else {
         message = e.toString();
       }
     }
-    return FormatResult(_isValid, message);
+    return FormatResult(isValid,isAdmin, message);
   }
 }
