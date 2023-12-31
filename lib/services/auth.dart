@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FormatResult {
   bool isValid;
@@ -8,29 +9,38 @@ class FormatResult {
 
 class UserResult {
   bool isLoggedIn;
+  bool isAdmin;
   List<String?> userDetails;
-  UserResult(this.isLoggedIn, this.userDetails);
+  UserResult(this.isLoggedIn,this.isAdmin, this.userDetails);
 }
 
 class Authentication {
   Future<UserResult> userAuth() async {
     bool isLoggedIn = false;
+    bool isAdmin = false;
     List<String?> userDetails = [];
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         isLoggedIn = false;
       } else {
-        isLoggedIn = true;
-        userDetails = [
-          user.displayName,
-          user.email,
-          user.phoneNumber,
-          user.photoURL,
-          user.uid
-        ];
+         FirebaseFirestore.instance.collection('admin_db').doc(user.uid).get().then((DocumentSnapshot documentSnapshot) =>
+         {
+           if(documentSnapshot.exists){
+             isAdmin = true
+           },
+            isLoggedIn = true,
+             userDetails = [
+             user.displayName,
+             user.email,
+             user.phoneNumber,
+             user.photoURL,
+             user.uid,
+             ]
+         });
+
       }
     });
-    return UserResult(isLoggedIn, userDetails);
+    return UserResult(isLoggedIn,isAdmin, userDetails);
   }
 
   Future<FormatResult> userRegistration(String email, String password) async {

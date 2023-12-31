@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () => {
               Navigator.of(context).push(
                   MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                return const NoticationScreen();
+                return const NotificationScreen();
               }))
             },
           ), //IconButton

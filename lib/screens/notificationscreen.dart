@@ -3,16 +3,14 @@ import '../components/normal_list.dart';
 import '../dto/visual_dto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class NoticationScreen extends StatefulWidget {
-  const NoticationScreen({super.key});
+class NotificationScreen extends StatefulWidget {
+  const NotificationScreen({super.key});
 
   @override
-  State<NoticationScreen> createState() => _NoticationScreenState();
+  State<NotificationScreen> createState() => _NotificationScreenState();
 }
-
-class _NoticationScreenState extends State<NoticationScreen> {
-  final NotificationData notificationData = NotificationData();
-
+final NotificationData notificationData = NotificationData();
+class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +93,18 @@ class Notification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    reset(){
+      Navigator.pop(context);
+    }
+
+    deleteDoc(id) async{
+      notificationData.notificationsDb.doc(id).delete().then((value) => {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feed removed")),
+        ),
+        reset()
+      });
+    }
     final List stringParagraph = notification['paragraphs'];
     final List<String> paragraphs = stringParagraph[0].split(".,");
     // final List stringLinks = notification['links'];
@@ -191,7 +201,17 @@ class Notification extends StatelessWidget {
                     ),
                   ],
                 ),
-              )
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                  ),
+                  onPressed:() => deleteDoc(notification.id),
+                  child: const Text('Delete'),
+                ),
+              ),
             ],
           ),
         ));

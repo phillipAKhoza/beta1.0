@@ -7,9 +7,8 @@ class LocationScreen extends StatefulWidget {
   @override
   State<LocationScreen> createState() => _LocationScreenState();
 }
-
+final BranchesData branchesData = BranchesData();
 class _LocationScreenState extends State<LocationScreen> {
-  final BranchesData branchesData = BranchesData();
   // final List<int> colorCodes = <int>[600, 500, 100];
 
   @override
@@ -102,6 +101,18 @@ class Location extends StatelessWidget {
   final DocumentSnapshot branch;
   @override
   Widget build(BuildContext context) {
+    reset(){
+      Navigator.pop(context);
+    }
+
+    deleteDoc(id) async{
+      branchesData.ministriesDb.doc(id).delete().then((value) => {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feed removed")),
+        ),
+        reset()
+      });
+    }
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -188,7 +199,17 @@ class Location extends StatelessWidget {
                     // const Text('\n'),
                   ],
                 ),
-              )
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                  ),
+                  onPressed:() => deleteDoc(branch.id),
+                  child: const Text('Delete'),
+                ),
+              ),
             ],
           ),
         ));
