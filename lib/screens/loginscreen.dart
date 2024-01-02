@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/auth.dart';
+import './screens.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -101,8 +102,35 @@ class LoginButton extends StatelessWidget {
           backgroundColor: color,
         ),
         onPressed: () async{
-          // Navigator.popAndPushNamed(context, "/app"),
-          await Authentication().signInWithGoogle();
+          await Authentication().signInWithGoogle().then((auth) {
+
+            if (auth.isValid)
+            {
+              Navigator.of(context).push(
+                  MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) {
+                        return  const MainApp();
+                      }));
+            }
+            else
+            {
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) =>
+                    AlertDialog(
+                      title: const Text('Login Failed'),
+                      content: Text(auth.message),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.pop(context, 'OK'),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+              );
+            }
+          });
         },
         label: Text(text, textAlign: TextAlign.center),
       ),

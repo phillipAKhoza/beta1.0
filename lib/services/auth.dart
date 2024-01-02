@@ -41,7 +41,9 @@ class CurrentUser{
 }
 class Authentication {
 
-  Future<UserCredential> signInWithGoogle() async {
+  Future<FormatResult> signInWithGoogle() async {
+    bool isValid = false;
+    String message = 'Success';
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -55,7 +57,38 @@ class Authentication {
     );
 
     // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    // return
+    try {
+      CurrentUser.init();
+      await FirebaseAuth.instance.signInWithCredential(credential).then((
+          value) =>
+      {
+        if(value.user != null){
+
+          isValid = true,
+          FirebaseFirestore.instance.collection('admin_db').doc(
+              value.user!.uid).get().then((DocumentSnapshot documentSnapshot) {
+            if (documentSnapshot.exists) {
+              CurrentUser.setAdminStatus(true);
+            } else {
+              CurrentUser.setAdminStatus(false);
+            }
+          }),
+        }
+      });
+    }on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        message = 'No user found for that email.';
+        isValid = false;
+      } else if (e.code == 'wrong-password') {
+        message = 'Wrong password provided for that user.';
+        isValid = false;
+      } else {
+        message = e.toString();
+      }
+    }
+
+    return FormatResult(isValid, message);
   }
 
   Future<UserResult> userAuth() async {

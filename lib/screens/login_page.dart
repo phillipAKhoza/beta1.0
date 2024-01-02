@@ -38,26 +38,7 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             const LoginForm(),
-            // Flexible(
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(
-            //       left: 10,
-            //       right: 10,
-            //       top: 20,
-            //       bottom: 50,
-            //     ),
-            //     child: InkWell(
-            //       onTap: _register,
-            //       child: const Align(
-            //         alignment: Alignment.bottomCenter,
-            //         child: Text(
-            //           'Dont have an Accout? Signup',
-            //           style: TextStyle(color: Colors.blue),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // )
+
             Padding(
               padding: const EdgeInsets.only(
                 left: 10,
