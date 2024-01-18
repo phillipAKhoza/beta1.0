@@ -11,7 +11,12 @@ class LocationScreen extends StatefulWidget {
 final BranchesData branchesData = BranchesData();
 class _LocationScreenState extends State<LocationScreen> {
   // final List<int> colorCodes = <int>[600, 500, 100];
-
+  late Future<QuerySnapshot> locationDbCall;
+  @override
+  void initState(){
+    super.initState();
+    locationDbCall = branchesData.ministriesDb.get(const GetOptions(source : Source.cache));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +29,7 @@ class _LocationScreenState extends State<LocationScreen> {
           automaticallyImplyLeading: false,
         ),
         body: FutureBuilder<QuerySnapshot>(
-          future: branchesData.ministriesDb.get(),
+          future: locationDbCall,
           builder: (BuildContext context,  snapshot){
             if (snapshot.hasData) {
 
