@@ -12,7 +12,12 @@ class MinistryScreen extends StatefulWidget {
 }
 final MinistriesData ministriesData = MinistriesData();
 class _MinistryScreenState extends State<MinistryScreen> {
-
+  late Future<QuerySnapshot> ministryDbCall;
+  @override
+  void initState(){
+    super.initState();
+    ministryDbCall = ministriesData.ministriesDb.get(const GetOptions(source : Source.cache));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +90,7 @@ class _MinistryScreenState extends State<MinistryScreen> {
               ),
 
               FutureBuilder<QuerySnapshot>(
-                future: ministriesData.ministriesDb.get(),
+                future: ministryDbCall,
                 builder: (BuildContext context,  snapshot){
                   if (snapshot.hasData) {
 
