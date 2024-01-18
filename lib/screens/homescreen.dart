@@ -97,6 +97,13 @@ class Myfeed extends StatefulWidget {
 }
 final FeedData feedData = FeedData();
 class _MyfeedState extends State<Myfeed> {
+   late Future<QuerySnapshot> feedDbCall;
+  @override
+  void initState(){
+    // TODO: implement initState
+    super.initState();
+    feedDbCall = feedData.feedsDb.get(const GetOptions(source : Source.cache));
+  }
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -159,7 +166,7 @@ class _MyfeedState extends State<Myfeed> {
             ),
           ),
       FutureBuilder<QuerySnapshot>(
-        future: feedData.feedsDb.get(),
+        future: feedDbCall,
         builder: (BuildContext context,  snapshot) {
           if (snapshot.hasData) {
             // <3> Retrieve `List<DocumentSnapshot>` from snapshot
