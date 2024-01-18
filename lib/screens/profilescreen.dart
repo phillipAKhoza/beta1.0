@@ -11,11 +11,13 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? userEmail = CurrentUser.getUserEmail();
   String? userUid = CurrentUser.getUserUid();
+  late Future<UserResult> authDbCall;
   @override
   void initState() {
     super.initState();
     userEmail = CurrentUser.getUserEmail();
     userUid = CurrentUser.getUserUid();
+    authDbCall = Authentication().userAuth();
   }
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<UserResult>(
-        future: Authentication().userAuth(), // a previously-obtained Future<String> or null
+        future: authDbCall, // a previously-obtained Future<String> or null
         builder: (BuildContext context, AsyncSnapshot<UserResult> snapshot) {
           List<Widget> children;
           if (snapshot.hasData) {
