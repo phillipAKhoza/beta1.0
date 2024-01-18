@@ -296,6 +296,7 @@ class KidsMinistry extends StatefulWidget {
 class _KidsMinistryState extends State<KidsMinistry> {
   KidsStreamData kidsData = KidsStreamData();
   late String videoTitle;
+  late Future<QuerySnapshot> kidsDbCall;
   bool streamReady=false;
   List<String> streamUlr =[];
 
@@ -306,7 +307,7 @@ class _KidsMinistryState extends State<KidsMinistry> {
   @override
   void initState() {
     super.initState();
-
+    kidsDbCall = kidsData.kidsStreamDb.get(const GetOptions(source : Source.cache));
   }
 
 
@@ -331,7 +332,7 @@ class _KidsMinistryState extends State<KidsMinistry> {
         ),
         body:
         FutureBuilder<QuerySnapshot>(
-          future: kidsData.kidsStreamDb.get(),
+          future: kidsDbCall,
           builder: (BuildContext context,  snapshot){
             if (snapshot.hasData) {
 
