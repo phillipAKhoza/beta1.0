@@ -12,6 +12,7 @@ class StreamScreen extends StatefulWidget {
 
 class _StreamScreenState extends State<StreamScreen> {
   SermonStreamData sermonData = SermonStreamData();
+  late Future<QuerySnapshot> sermonDbCall;
   late String videoTitle;
    bool streamReady=false;
    List<String> streamUlr =[];
@@ -23,7 +24,7 @@ class _StreamScreenState extends State<StreamScreen> {
   @override
   void initState() {
     super.initState();
-
+    sermonDbCall = sermonData.sermonStreamDb.get(const GetOptions(source : Source.cache));
   }
 
 
@@ -44,7 +45,7 @@ class _StreamScreenState extends State<StreamScreen> {
       ),
       body:
       FutureBuilder<QuerySnapshot>(
-        future: sermonData.sermonStreamDb.get(),
+        future: sermonDbCall,
         builder: (BuildContext context,  snapshot){
           if (snapshot.hasData) {
 
