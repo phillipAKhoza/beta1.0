@@ -12,6 +12,12 @@ class NotificationScreen extends StatefulWidget {
 }
 final NotificationData notificationData = NotificationData();
 class _NotificationScreenState extends State<NotificationScreen> {
+  late Future<QuerySnapshot> notificationDbCall;
+  @override
+  void initState(){
+    super.initState();
+    notificationDbCall = notificationData.notificationsDb.get(const GetOptions(source : Source.cache));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +31,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         ),
         body:
         FutureBuilder<QuerySnapshot>(
-          future: notificationData.notificationsDb.get(),
+          future: notificationDbCall,
           builder: (BuildContext context,  snapshot){
             if (snapshot.hasData) {
 
