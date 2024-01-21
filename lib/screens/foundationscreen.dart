@@ -12,7 +12,12 @@ class FoundationScreen extends StatefulWidget {
 }
 final FoundationData foundationData = FoundationData();
 class _FoundationScreenState extends State<FoundationScreen> {
-
+  late Future<QuerySnapshot> foundationDbCall;
+  @override
+  void initState(){
+    super.initState();
+    foundationDbCall = foundationData.foundationsDb.get(const GetOptions(source : Source.cache));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +31,7 @@ class _FoundationScreenState extends State<FoundationScreen> {
         ),
         body:
         FutureBuilder<QuerySnapshot>(
-          future: foundationData.foundationsDb.get(),
+          future: foundationDbCall,
           builder: (BuildContext context,  snapshot) {
             if (snapshot.hasData) {
               final List<DocumentSnapshot> documents = snapshot.data!.docs;

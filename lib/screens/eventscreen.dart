@@ -12,8 +12,12 @@ class EventsScreen extends StatefulWidget {
 }
 final EventData eventData = EventData();
 class _EventsScreenState extends State<EventsScreen> {
-
-
+  late Future<QuerySnapshot> eventDbCall;
+  @override
+  void initState(){
+    super.initState();
+    eventDbCall = eventData.eventsDb.get(const GetOptions(source : Source.cache));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +32,7 @@ class _EventsScreenState extends State<EventsScreen> {
         body:
 
         FutureBuilder<QuerySnapshot>(
-          future: eventData.eventsDb.get(),
+          future: eventDbCall,
           builder: (BuildContext context,  snapshot){
           if (snapshot.hasData) {
 

@@ -2,9 +2,19 @@ import 'package:flutter/material.dart';
 import '../services/auth.dart';
 import './screens.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void initState() {
+    super.initState();
+    if (CurrentUser.getUserUid() != null) {Navigator.popAndPushNamed(context, "/app");}
+  }
   @override
   Widget build(BuildContext context) {
     Authentication().userAuth().then((user) => {

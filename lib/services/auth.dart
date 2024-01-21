@@ -70,6 +70,7 @@ class Authentication {
               value.user!.uid).get().then((DocumentSnapshot documentSnapshot) {
             if (documentSnapshot.exists) {
               CurrentUser.setAdminStatus(true);
+              CurrentUser.setUserUid(value.user!.uid);
             } else {
               CurrentUser.setAdminStatus(false);
             }
@@ -153,6 +154,7 @@ class Authentication {
                value.user!.uid).get().then((DocumentSnapshot documentSnapshot) {
               if(documentSnapshot.exists){
                 CurrentUser.setAdminStatus(true);
+                CurrentUser.setUserUid(value.user!.uid);
               }else{
                 CurrentUser.setAdminStatus(false);
               }
