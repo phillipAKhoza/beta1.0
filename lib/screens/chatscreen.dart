@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../services/messageDB.dart';
+import '../services/auth.dart';
 
 const List<String> list = <String>[
   'Prayer',
@@ -38,21 +40,38 @@ class ChatForm extends StatefulWidget {
   @override
   State<ChatForm> createState() => _ChatFormState();
 }
-
+String dropdownValue = list.first;
 class _ChatFormState extends State<ChatForm> {
-  // late String _myActivity;
-  // late String _myActivityResult;
+
   String message = '';
+  String? userEmail = CurrentUser.getUserEmail();
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-    // _myActivity = '';
-    // _myActivityResult = '';
+    userEmail = CurrentUser.getUserEmail();
   }
 
-  _saveForm() {
-    // var form = formKey.currentState;
+  _saveForm() async{
+    if (formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sending Message')),
+      );
+      await AddToDB().addMessage(userEmail, dropdownValue, message).then((chat) =>
+      {
+        if(chat.isSuccessful){
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Message Sent.")),
+          ),
+          _reset()
+        }
+      }
+      );
+    }
+  }
+  _reset(){
+    formKey.currentState?.reset();
+    message="";
   }
 
   @override
@@ -119,8 +138,6 @@ class DropDownButton extends StatefulWidget {
 }
 
 class _DropDownButtonState extends State<DropDownButton> {
-  String dropdownValue = list.first;
-
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(

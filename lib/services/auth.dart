@@ -71,6 +71,7 @@ class Authentication {
             if (documentSnapshot.exists) {
               CurrentUser.setAdminStatus(true);
               CurrentUser.setUserUid(value.user!.uid);
+              CurrentUser.setUserEmail(value.user!.email);
             } else {
               CurrentUser.setAdminStatus(false);
             }
@@ -155,6 +156,7 @@ class Authentication {
               if(documentSnapshot.exists){
                 CurrentUser.setAdminStatus(true);
                 CurrentUser.setUserUid(value.user!.uid);
+                CurrentUser.setUserEmail(value.user!.email);
               }else{
                 CurrentUser.setAdminStatus(false);
               }
