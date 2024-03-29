@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../dto/dtobarrel.dart';
+import '../dto/dto-barrel.dart';
 
 class BibleScreen extends StatefulWidget {
   const BibleScreen({super.key});

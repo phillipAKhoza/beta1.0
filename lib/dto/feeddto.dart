@@ -25,11 +25,12 @@ class getFeedData {
 }
 
 class FeedData {
-   getFeeds() async{
-
-     return await FirebaseFirestore.instance.collection('feed_db').get();
-
-  }
+  //  getFeeds() async{
+  //
+  //    return await FirebaseFirestore.instance.collection('feed_db').get();
+  //
+  // }
+   CollectionReference feedsDb = FirebaseFirestore.instance.collection('feed_db');
   List<FeedDto> myfeeds = [
     FeedDto(
         image: 'assets/images/logo1.png',

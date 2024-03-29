@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
-import '../dto/dtobarrel.dart';
+import '../dto/dto-barrel.dart';
 import './screens.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../services/auth.dart';
 class MinistryScreen extends StatefulWidget {
   const MinistryScreen({super.key});
 
   @override
   State<MinistryScreen> createState() => _MinistryScreenState();
 }
-
+final MinistriesData ministriesData = MinistriesData();
 class _MinistryScreenState extends State<MinistryScreen> {
-  final MinistriesData ministriesData = MinistriesData();
-
+  late Future<QuerySnapshot> ministryDbCall;
+  @override
+  void initState(){
+    super.initState();
+    ministryDbCall = ministriesData.ministriesDb.get(const GetOptions(source : Source.cache));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,38 +88,9 @@ class _MinistryScreenState extends State<MinistryScreen> {
                   }));
                 },
               ),
-              // ListView.builder(
-              //   shrinkWrap: true,
-              //   padding: const EdgeInsets.all(1),
-              //   itemCount: ministriesData.ministries.length,
-              //   itemBuilder: (BuildContext context, int index) {
-              //     return InkWell(
-              //       child: Card(
-              //         child: Padding(
-              //           padding:
-              //               const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-              //           child: Text(
-              //             ministriesData.ministries[index].church,
-              //             style: const TextStyle(
-              //               fontSize: 17.0,
-              //               fontWeight: FontWeight.bold,
-              //               color: Colors.black54,
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-              //       onTap: () {
-              //         Navigator.of(context).push(MaterialPageRoute<dynamic>(
-              //             builder: (BuildContext context) {
-              //           return Ministry(
-              //               ministry: ministriesData.ministries[index]);
-              //         }));
-              //       },
-              //     );
-              //   },
-              // ),
+
               FutureBuilder<QuerySnapshot>(
-                future: ministriesData.ministriesDb.get(),
+                future: ministryDbCall,
                 builder: (BuildContext context,  snapshot){
                   if (snapshot.hasData) {
 
@@ -191,18 +167,43 @@ class _MinistryScreenState extends State<MinistryScreen> {
   }
 }
 
-class Ministry extends StatelessWidget {
+class Ministry extends StatefulWidget {
   const Ministry({super.key, required this.ministry});
   final DocumentSnapshot ministry;
+
+  @override
+  State<Ministry> createState() => _MinistryState();
+}
+
+class _MinistryState extends State<Ministry> {
+  bool? isAdmin = CurrentUser.getAdminStatus();
+
+  @override
+  void initState() {
+    super.initState();
+    isAdmin = CurrentUser.getAdminStatus();
+  }
   @override
   Widget build(BuildContext context) {
+    reset(){
+      Navigator.pop(context);
+    }
+
+    deleteDoc(id) async{
+      foundationData.foundationsDb.doc(id).delete().then((value) => {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feed removed")),
+        ),
+        reset()
+      });
+    }
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Text(ministry['church']),
+          title: Text(widget.ministry['church']),
           automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
@@ -212,7 +213,7 @@ class Ministry extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                  '${ministry['church']}\'s Ministry',
+                  '${widget.ministry['church']}\'s Ministry',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
@@ -226,7 +227,7 @@ class Ministry extends StatelessWidget {
                   children: [
                     Center(
                       child: Text(
-                        'Under the Leadership of ${ministry['leaders']} ',
+                        'Under the Leadership of ${widget.ministry['leaders']} ',
                         style: const TextStyle(
                           fontSize: 12.0,
                           color: Colors.black54,
@@ -234,7 +235,7 @@ class Ministry extends StatelessWidget {
                         ),
                       ),
                     ),
-                    for (var item in ministry['paragraphs'] ?? [])
+                    for (var item in widget.ministry['paragraphs'] ?? [])
                       Text(
                         '\n $item',
                         maxLines: 10,
@@ -245,32 +246,15 @@ class Ministry extends StatelessWidget {
                         ),
                       ),
                     const Text('\n'),
-                    // Text(
-                    //   '${ministry.church} is located at:',
-                    //   style: const TextStyle(
-                    //     fontSize: 12.0,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: Colors.black54,
-                    //   ),
-                    // ),
-                    // for (var item in ministry.address)
-                    //   Text(
-                    //     item,
-                    //     style: const TextStyle(
-                    //       fontSize: 12.0,
-                    //       fontWeight: FontWeight.bold,
-                    //       color: Colors.black54,
-                    //     ),
-                    //   ),
                     Text(
-                      'Contact ${ministry['church']} Ministry :',
+                      'Contact ${widget.ministry['church']} Ministry :',
                       style: const TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black54,
                       ),
                     ),
-                    for (var item in ministry['contacts'])
+                    for (var item in widget.ministry['contacts'])
                       Text(
                         item,
                         style: const TextStyle(
@@ -282,7 +266,20 @@ class Ministry extends StatelessWidget {
                     // const Text('\n'),
                   ],
                 ),
-              )
+              ),
+              if(isAdmin == true)...[
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
+                    onPressed:() => deleteDoc(widget.ministry.id),
+                    child: const Text('Delete'),
+                  ),
+                ),
+              ]
+
             ],
           ),
         ));
@@ -299,6 +296,7 @@ class KidsMinistry extends StatefulWidget {
 class _KidsMinistryState extends State<KidsMinistry> {
   KidsStreamData kidsData = KidsStreamData();
   late String videoTitle;
+  late Future<QuerySnapshot> kidsDbCall;
   bool streamReady=false;
   List<String> streamUlr =[];
 
@@ -309,7 +307,7 @@ class _KidsMinistryState extends State<KidsMinistry> {
   @override
   void initState() {
     super.initState();
-
+    kidsDbCall = kidsData.kidsStreamDb.get(const GetOptions(source : Source.cache));
   }
 
 
@@ -334,7 +332,7 @@ class _KidsMinistryState extends State<KidsMinistry> {
         ),
         body:
         FutureBuilder<QuerySnapshot>(
-          future: kidsData.kidsStreamDb.get(),
+          future: kidsDbCall,
           builder: (BuildContext context,  snapshot){
             if (snapshot.hasData) {
 

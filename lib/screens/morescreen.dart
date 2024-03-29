@@ -51,6 +51,13 @@ class _MoreItemsState extends State<MoreItems> {
     '/terms',
     '/admin'
   ];
+  bool? isAdmin = CurrentUser.getAdminStatus();
+
+  @override
+  void initState() {
+    super.initState();
+    isAdmin = CurrentUser.getAdminStatus();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,18 +128,20 @@ class _MoreItemsState extends State<MoreItems> {
                 }));
               },
             )),
-            Card(
-                child: ListTile(
-                  // leading: Icon(Icons.${icon[index]}),
-                  title: const Text("Admin"),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                          return const AdminScreen();
-                        }));
-                  },
-                )),
+            if(isAdmin == true)...[
+              Card(
+                  child: ListTile(
+                    // leading: Icon(Icons.${icon[index]}),
+                    title: const Text("Admin"),
+                    trailing: const Icon(Icons.keyboard_arrow_right),
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+                            return const AdminScreen();
+                          }));
+                    },
+                  )),
+            ],
             Card(
                 child: ListTile(
               // leading: Icon(Icons.${icon[index]}),

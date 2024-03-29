@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/custom_list.dart';
 import '../dto/visual_dto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/auth.dart';
 
 class FoundationScreen extends StatefulWidget {
   const FoundationScreen({super.key});
@@ -9,10 +10,14 @@ class FoundationScreen extends StatefulWidget {
   @override
   State<FoundationScreen> createState() => _FoundationScreenState();
 }
-
+final FoundationData foundationData = FoundationData();
 class _FoundationScreenState extends State<FoundationScreen> {
-  final FoundationData foundationData = FoundationData();
-
+  late Future<QuerySnapshot> foundationDbCall;
+  @override
+  void initState(){
+    super.initState();
+    foundationDbCall = foundationData.foundationsDb.get(const GetOptions(source : Source.cache));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +31,7 @@ class _FoundationScreenState extends State<FoundationScreen> {
         ),
         body:
         FutureBuilder<QuerySnapshot>(
-          future: foundationData.foundationsDb.get(),
+          future: foundationDbCall,
           builder: (BuildContext context,  snapshot) {
             if (snapshot.hasData) {
               final List<DocumentSnapshot> documents = snapshot.data!.docs;
@@ -95,12 +100,37 @@ class _FoundationScreenState extends State<FoundationScreen> {
   }
 }
 
-class Foundation extends StatelessWidget {
+class Foundation extends StatefulWidget {
   const Foundation({super.key, required this.foundation});
   final DocumentSnapshot foundation;
+
+  @override
+  State<Foundation> createState() => _FoundationState();
+}
+
+class _FoundationState extends State<Foundation> {
+  bool? isAdmin = CurrentUser.getAdminStatus();
+
+  @override
+  void initState() {
+    super.initState();
+    isAdmin = CurrentUser.getAdminStatus();
+  }
   @override
   Widget build(BuildContext context) {
-    final List stringParagraph = foundation['paragraphs'];
+    reset(){
+      Navigator.pop(context);
+    }
+
+    deleteDoc(id) async{
+      foundationData.foundationsDb.doc(id).delete().then((value) => {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feed removed")),
+        ),
+        reset()
+      });
+    }
+    final List stringParagraph = widget.foundation['paragraphs'];
     final List<String> paragraphs = stringParagraph[0].split(".,");
     return Scaffold(
         appBar: AppBar(
@@ -109,7 +139,7 @@ class Foundation extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
-            foundation['title'],
+            widget.foundation['title'],
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -118,13 +148,13 @@ class Foundation extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (foundation['image'] != null) ...[
-                if(foundation['image'].contains("http"))...[
+              if (widget.foundation['image'] != null) ...[
+                if(widget.foundation['image'].contains("http"))...[
                   Container(
                     height: MediaQuery.of(context).size.height * 0.5,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(foundation['image']),
+                        image: NetworkImage(widget.foundation['image']),
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -135,7 +165,7 @@ class Foundation extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image:
-                        AssetImage(foundation['image'] ?? 'assets/images/logo1.png'),
+                        AssetImage(widget.foundation['image'] ?? 'assets/images/logo1.png'),
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -146,7 +176,7 @@ class Foundation extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                  foundation['title'],
+                  widget.foundation['title'],
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
@@ -169,7 +199,7 @@ class Foundation extends StatelessWidget {
                         ),
                       ),
                     // if (foundation.links.isNotEmpty) const Text('\n'),
-                    for (var item in foundation['links'])
+                    for (var item in widget.foundation['links'])
                       Text(
                         item,
                         style: const TextStyle(
@@ -180,7 +210,20 @@ class Foundation extends StatelessWidget {
                       ),
                   ],
                 ),
-              )
+              ),
+              if(isAdmin == true)...[
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
+                    onPressed:() => deleteDoc(widget.foundation.id),
+                    child: const Text('Delete'),
+                  ),
+                ),
+              ]
+
             ],
           ),
         ));

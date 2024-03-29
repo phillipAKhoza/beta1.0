@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../components/normal_list.dart';
 import '../dto/visual_dto.dart';
+import '../services/auth.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -9,10 +10,14 @@ class EventsScreen extends StatefulWidget {
   @override
   State<EventsScreen> createState() => _EventsScreenState();
 }
-
+final EventData eventData = EventData();
 class _EventsScreenState extends State<EventsScreen> {
-  final EventData eventData = EventData();
-
+  late Future<QuerySnapshot> eventDbCall;
+  @override
+  void initState(){
+    super.initState();
+    eventDbCall = eventData.eventsDb.get(const GetOptions(source : Source.cache));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +32,7 @@ class _EventsScreenState extends State<EventsScreen> {
         body:
 
         FutureBuilder<QuerySnapshot>(
-          future: eventData.eventsDb.get(),
+          future: eventDbCall,
           builder: (BuildContext context,  snapshot){
           if (snapshot.hasData) {
 
@@ -95,15 +100,41 @@ class _EventsScreenState extends State<EventsScreen> {
   }
 }
 
-class Event extends StatelessWidget {
+class Event extends StatefulWidget {
   const Event({super.key, required this.event});
   // final VisualDto event;
   final DocumentSnapshot event;
+
+  @override
+  State<Event> createState() => _EventState();
+}
+
+class _EventState extends State<Event> {
+  bool? isAdmin = CurrentUser.getAdminStatus();
+
+  @override
+  void initState() {
+    super.initState();
+    isAdmin = CurrentUser.getAdminStatus();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List stringParagraph = event['paragraphs'];
+    reset(){
+      Navigator.pop(context);
+    }
+
+    deleteDoc(id) async{
+      eventData.eventsDb.doc(id).delete().then((value) => {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feed removed")),
+        ),
+        reset()
+      });
+    }
+    final List stringParagraph = widget.event['paragraphs'];
     final List<String> paragraphs = stringParagraph[0].split(".,");
-    final List stringLinks = event['links'];
+    final List stringLinks = widget.event['links'];
     final List<String> links = stringLinks[0].split('.,');
     return Scaffold(
         appBar: AppBar(
@@ -117,13 +148,13 @@ class Event extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              if (event['image'] != null) ...[
-                if(event['image'].contains("http"))...[
+              if (widget.event['image'] != null) ...[
+                if(widget.event['image'].contains("http"))...[
                   Container(
                     height: MediaQuery.of(context).size.height * 0.5,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(event['image']),
+                        image: NetworkImage(widget.event['image']),
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -134,7 +165,7 @@ class Event extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image:
-                        AssetImage(event['image'] ?? 'assets/images/logo1.png'),
+                        AssetImage(widget.event['image'] ?? 'assets/images/logo1.png'),
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -145,7 +176,7 @@ class Event extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                 child: Center(
                     child: Text(
-                      event['title'] ?? '',
+                      widget.event['title'] ?? '',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
@@ -167,7 +198,7 @@ class Event extends StatelessWidget {
                           color: Colors.black54,
                         ),
                       ),
-                    if (event['links'] != null) const Text('\n'),
+                    if (widget.event['links'] != null) const Text('\n'),
                     for (var item in links)
                       Text(
                         item,
@@ -178,9 +209,9 @@ class Event extends StatelessWidget {
                         ),
                       ),
                     const Text('\n'),
-                    if (event['author'] != null)
+                    if (widget.event['author'] != null)
                       Text(
-                        event['author'] ?? '',
+                        widget.event['author'] ?? '',
                         style: const TextStyle(
                           fontSize: 12.0,
                           color: Colors.black54,
@@ -188,7 +219,7 @@ class Event extends StatelessWidget {
                         ),
                       ),
                     Text(
-                      'Event Date: ${event['date']}',
+                      'Event Date: ${widget.event['date']}',
                       style: const TextStyle(
                         fontSize: 12.0,
                         color: Colors.black54,
@@ -197,7 +228,19 @@ class Event extends StatelessWidget {
                     ),
                   ],
                 ),
-              )
+              ),
+              if(isAdmin == true)...[
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
+                    onPressed:() => deleteDoc(widget.event.id),
+                    child: const Text('Delete'),
+                  ),
+                ),
+              ]
             ],
           ),
         ));

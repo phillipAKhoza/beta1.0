@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import '../services/auth.dart';
+import './screens.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void initState() {
+    super.initState();
+    if (CurrentUser.getUserUid() != null) {Navigator.popAndPushNamed(context, "/app");}
+  }
   @override
   Widget build(BuildContext context) {
     Authentication().userAuth().then((user) => {
@@ -55,12 +66,6 @@ class LoginScreen extends StatelessWidget {
                 // loginMethod: AuthService().googleLogin,
               ),
             ),
-            // const LoginButton(
-            //   text: 'Sign in with Google',
-            //   icon: Icons.g_translate,
-            //   color: Colors.blue,
-            //   // loginMethod: AuthService().googleLogin,
-            // ),
             InkWell(
               onTap: _register,
               child: const Align(
@@ -106,8 +111,36 @@ class LoginButton extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           backgroundColor: color,
         ),
-        onPressed: () => {
-          Navigator.popAndPushNamed(context, "/app"),
+        onPressed: () async{
+          await Authentication().signInWithGoogle().then((auth) {
+
+            if (auth.isValid)
+            {
+              Navigator.of(context).push(
+                  MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) {
+                        return  const MainApp();
+                      }));
+            }
+            else
+            {
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) =>
+                    AlertDialog(
+                      title: const Text('Login Failed'),
+                      content: Text(auth.message),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.pop(context, 'OK'),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+              );
+            }
+          });
         },
         label: Text(text, textAlign: TextAlign.center),
       ),
