@@ -16,7 +16,8 @@ class _FoundationScreenState extends State<FoundationScreen> {
   @override
   void initState(){
     super.initState();
-    foundationDbCall = foundationData.foundationsDb.get(const GetOptions(source : Source.cache));
+    foundationDbCall = foundationData.foundationsDb.get();
+  //   const GetOptions(source : Source.cache)
   }
   @override
   Widget build(BuildContext context) {

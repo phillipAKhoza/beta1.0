@@ -24,7 +24,8 @@ class _StreamScreenState extends State<StreamScreen> {
   @override
   void initState() {
     super.initState();
-    sermonDbCall = sermonData.sermonStreamDb.get(const GetOptions(source : Source.cache));
+    sermonDbCall = sermonData.sermonStreamDb.get();
+  //   const GetOptions(source : Source.cache)
   }
 
 

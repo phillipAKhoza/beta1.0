@@ -101,7 +101,7 @@ class _MyfeedState extends State<Myfeed> {
   @override
   void initState(){
     super.initState();
-    feedDbCall = feedData.feedsDb.get(const GetOptions(source : Source.cache));
+    feedDbCall = feedData.feedsDb.get();
   }
   @override
   Widget build(BuildContext context) {
@@ -168,6 +168,7 @@ class _MyfeedState extends State<Myfeed> {
         future: feedDbCall,
         builder: (BuildContext context,  snapshot) {
           if (snapshot.hasData) {
+            print(snapshot.data!.docs.length);
             // <3> Retrieve `List<DocumentSnapshot>` from snapshot
             final List<DocumentSnapshot> documents = snapshot.data!.docs;
             if(documents.isEmpty){

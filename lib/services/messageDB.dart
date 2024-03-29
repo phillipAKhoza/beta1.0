@@ -18,12 +18,12 @@ class AddToDB{
     }
     return AddedChat(message,isSuccessful);
   }
-  Future<AddedChat> addTechnicalChat(url) async {
+  Future<AddedChat> addTechnicalChat(email,chatMessage) async {
     String message="";
     bool isSuccesful = false;
     try {
       await FirebaseFirestore.instance.collection('tech_chat_db')
-          .add({"url": url})
+          .add({"email": email, "message":chatMessage, "subject": ""})
           .then((documentSnapshot) =>  {isSuccesful =true, message="success"});
 
     } catch (e) {

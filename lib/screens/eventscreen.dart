@@ -16,7 +16,8 @@ class _EventsScreenState extends State<EventsScreen> {
   @override
   void initState(){
     super.initState();
-    eventDbCall = eventData.eventsDb.get(const GetOptions(source : Source.cache));
+    eventDbCall = eventData.eventsDb.get();
+  //   const GetOptions(source : Source.cache)
   }
   @override
   Widget build(BuildContext context) {

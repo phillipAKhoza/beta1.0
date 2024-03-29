@@ -15,7 +15,8 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   void initState(){
     super.initState();
-    locationDbCall = branchesData.ministriesDb.get(const GetOptions(source : Source.cache));
+    locationDbCall = branchesData.ministriesDb.get();
+  //   const GetOptions(source : Source.cache)
   }
   @override
   Widget build(BuildContext context) {
