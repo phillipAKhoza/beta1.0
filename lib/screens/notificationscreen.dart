@@ -16,7 +16,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   void initState(){
     super.initState();
-    notificationDbCall = notificationData.notificationsDb.get();
+    notificationDbCall = notificationData.notificationsDb.get(const GetOptions(source : Source.cache));
+    notificationDbCall.then((value) =>
+    {
+      if(value.docs.isEmpty){
+        notificationDbCall = notificationData.notificationsDb.get(
+            const GetOptions(source: Source.server))
+      }
+    });
   //   const GetOptions(source : Source.cache)
   }
   @override
