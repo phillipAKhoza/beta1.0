@@ -313,7 +313,12 @@ class _KidsMinistryState extends State<KidsMinistry> {
   @override
   void initState() {
     super.initState();
-    kidsDbCall = kidsData.kidsStreamDb.get();
+    kidsDbCall = kidsData.kidsStreamDb.get(const GetOptions(source: Source.cache));
+    kidsDbCall.then((value) => {
+      if(value.docs.isEmpty){
+        kidsDbCall = kidsData.kidsStreamDb.get(const GetOptions(source: Source.server))
+      }
+    });
   //   const GetOptions(source : Source.cache)
   }
 
