@@ -15,7 +15,12 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   void initState(){
     super.initState();
-    locationDbCall = branchesData.ministriesDb.get();
+    locationDbCall = branchesData.ministriesDb.get(const GetOptions(source: Source.cache));
+    locationDbCall.then((value) => {
+      if(value.docs.isEmpty){
+        locationDbCall = branchesData.ministriesDb.get(const GetOptions(source: Source.server))
+      }
+    });
   //   const GetOptions(source : Source.cache)
   }
   @override
