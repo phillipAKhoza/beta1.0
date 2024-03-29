@@ -16,7 +16,12 @@ class _MinistryScreenState extends State<MinistryScreen> {
   @override
   void initState(){
     super.initState();
-    ministryDbCall = ministriesData.ministriesDb.get();
+    ministryDbCall = ministriesData.ministriesDb.get(const GetOptions(source: Source.cache));
+    ministryDbCall.then((value) => {
+      if(value.docs.isEmpty){
+        ministryDbCall = ministriesData.ministriesDb.get(const GetOptions(source: Source.server))
+      }
+    });
   //   const GetOptions(source : Source.cache)
   }
   @override
