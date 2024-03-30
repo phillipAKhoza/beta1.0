@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import './screens/screens.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,9 +6,20 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: 'AIzaSyBlYRJCz0o1FAlCn07ljwf7VowkTPa9fwM',
+          appId: '1:865589370187:web:a40f09ccd24f90262adcce',
+          messagingSenderId: '865589370187',
+          projectId: 'uafc-westside-assembly',
+        storageBucket: 'uafc-westside-assembly.appspot.com'
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
+
   runApp(const MyApp());
 }
 
@@ -33,11 +45,11 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/login_page': (context) => const LoginPage(),
         '/register': (context) => const RegisterScreen(),
-        '/home': (context) =>   const HomeScreen(),
-        '/chat': (context) =>  const HomeScreen(),
-        '/liveStream': (context) =>  const HomeScreen(),
-        '/serve': (context) =>  const HomeScreen(),
-        '/more': (context) =>  const HomeScreen(),
+        '/home': (context) => const HomeScreen(),
+        '/chat': (context) => const HomeScreen(),
+        '/liveStream': (context) => const HomeScreen(),
+        '/serve': (context) => const HomeScreen(),
+        '/more': (context) => const HomeScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/technical': (context) => const TechnicalScreen(),
         '/foundation': (context) => const FoundationScreen(),
