@@ -16,7 +16,7 @@ class _EventsScreenState extends State<EventsScreen> {
   @override
   void initState(){
     super.initState();
-    eventDbCall =  eventData.eventsDb.get( const GetOptions(source : Source.cache));
+    eventDbCall =  eventData.eventsDb.get( const GetOptions(source : Source.serverAndCache));
     eventDbCall.then((value) => {
       if(value.docs.isEmpty){
         eventDbCall =  eventData.eventsDb.get( const GetOptions(source : Source.server))
