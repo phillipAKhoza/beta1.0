@@ -176,6 +176,11 @@ class LoginButtonWithUserName extends StatelessWidget {
         ),
         onPressed: () => {
           Navigator.popAndPushNamed(context, "/login_page"),
+          // Navigator.of(context).push(
+          //     MaterialPageRoute<dynamic>(
+          //         builder: (BuildContext context) {
+          //           return  const MainApp();
+          //         }))
         },
         label: Text(text, textAlign: TextAlign.center),
       ),
