@@ -16,7 +16,13 @@ class _MinistryScreenState extends State<MinistryScreen> {
   @override
   void initState(){
     super.initState();
-    ministryDbCall = ministriesData.ministriesDb.get(const GetOptions(source : Source.cache));
+    ministryDbCall = ministriesData.ministriesDb.get(const GetOptions(source: Source.serverAndCache));
+    ministryDbCall.then((value) => {
+      if(value.docs.isEmpty){
+        ministryDbCall = ministriesData.ministriesDb.get(const GetOptions(source: Source.server))
+      }
+    });
+  //   const GetOptions(source : Source.cache)
   }
   @override
   Widget build(BuildContext context) {
@@ -307,7 +313,13 @@ class _KidsMinistryState extends State<KidsMinistry> {
   @override
   void initState() {
     super.initState();
-    kidsDbCall = kidsData.kidsStreamDb.get(const GetOptions(source : Source.cache));
+    kidsDbCall = kidsData.kidsStreamDb.get(const GetOptions(source: Source.serverAndCache));
+    kidsDbCall.then((value) => {
+      if(value.docs.isEmpty){
+        kidsDbCall = kidsData.kidsStreamDb.get(const GetOptions(source: Source.server))
+      }
+    });
+  //   const GetOptions(source : Source.cache)
   }
 
 

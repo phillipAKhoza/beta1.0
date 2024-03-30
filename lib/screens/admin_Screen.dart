@@ -29,6 +29,7 @@ class _AdminItemsState extends State<AdminItems> {
     'Foundation',
     'Location',
     'Ministries',
+    'Messages',
   ];
   final List<String> path = <String>[
     '/admin_Feeds',
@@ -106,6 +107,11 @@ class AdminFormScreen extends StatelessWidget {
                  SizedBox(
                   height: 850,
                   child: StreamForm(screen:section)
+                ),
+              ]else if(section == "Messages")...[
+                SizedBox(
+                    height: 850,
+                    child: Messages(screen:section)
                 ),
               ],
             ],

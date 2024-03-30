@@ -99,9 +99,15 @@ final FeedData feedData = FeedData();
 class _MyfeedState extends State<Myfeed> {
    late Future<QuerySnapshot> feedDbCall;
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    feedDbCall = feedData.feedsDb.get(const GetOptions(source : Source.cache));
+    feedDbCall = feedData.feedsDb.get(const GetOptions(source : Source.serverAndCache));
+
+    // feedDbCall.then((value) => {
+    //   if(value.docs.isEmpty){
+    //     feedDbCall =  feedData.feedsDb.get( const GetOptions(source : Source.server))
+    //   }
+    // });
   }
   @override
   Widget build(BuildContext context) {
@@ -208,6 +214,7 @@ class _MyfeedState extends State<Myfeed> {
                     )).toList()),
             );
           } else if (snapshot.hasError) {
+            print(snapshot.error.toString());
             return const Center(child: Text("It's Error!",style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 17.0,
